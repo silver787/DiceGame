@@ -6,7 +6,7 @@ import tkinter as tk
 from random import randint
 from tkinter import messagebox
 import pygame
-from data.constants import *
+i
 
 
 class Player:
