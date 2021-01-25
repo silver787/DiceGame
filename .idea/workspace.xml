@@ -21,8 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="039b497d-52db-48ba-ade9-967098804f72" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/frames.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/frames.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,30 +98,34 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state x="229" y="575" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611606511579">
+    <state x="229" y="575" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611606903789">
       <screen x="71" y="22" width="2489" height="1418" />
     </state>
-    <state x="229" y="575" key="#com.intellij.execution.impl.EditConfigurationsDialog/71.22.2489.1418@71.22.2489.1418" timestamp="1611606511579" />
+    <state x="229" y="575" key="#com.intellij.execution.impl.EditConfigurationsDialog/71.22.2489.1418@71.22.2489.1418" timestamp="1611606903789" />
     <state x="395" y="346" key="#main" timestamp="1611606201609">
       <screen x="71" y="22" width="2489" height="1418" />
     </state>
     <state x="395" y="346" key="#main/71.22.2489.1418@71.22.2489.1418" timestamp="1611606201609" />
-    <state width="1230" height="409" key="GridCell.Tab.0.bottom" timestamp="1611606487519">
+    <state width="1230" height="409" key="GridCell.Tab.0.bottom" timestamp="1611606911140">
       <screen x="71" y="22" width="2489" height="1418" />
     </state>
-    <state width="1230" height="409" key="GridCell.Tab.0.bottom/71.22.2489.1418@71.22.2489.1418" timestamp="1611606487519" />
-    <state width="1230" height="409" key="GridCell.Tab.0.center" timestamp="1611606487518">
+    <state width="1230" height="409" key="GridCell.Tab.0.bottom/71.22.2489.1418@71.22.2489.1418" timestamp="1611606911140" />
+    <state width="1230" height="409" key="GridCell.Tab.0.center" timestamp="1611606911139">
       <screen x="71" y="22" width="2489" height="1418" />
     </state>
-    <state width="1230" height="409" key="GridCell.Tab.0.center/71.22.2489.1418@71.22.2489.1418" timestamp="1611606487518" />
-    <state width="1230" height="409" key="GridCell.Tab.0.left" timestamp="1611606487517">
+    <state width="1230" height="409" key="GridCell.Tab.0.center/71.22.2489.1418@71.22.2489.1418" timestamp="1611606911139" />
+    <state width="1230" height="409" key="GridCell.Tab.0.left" timestamp="1611606911139">
       <screen x="71" y="22" width="2489" height="1418" />
     </state>
-    <state width="1230" height="409" key="GridCell.Tab.0.left/71.22.2489.1418@71.22.2489.1418" timestamp="1611606487517" />
-    <state width="1230" height="409" key="GridCell.Tab.0.right" timestamp="1611606487518">
+    <state width="1230" height="409" key="GridCell.Tab.0.left/71.22.2489.1418@71.22.2489.1418" timestamp="1611606911139" />
+    <state width="1230" height="409" key="GridCell.Tab.0.right" timestamp="1611606911140">
       <screen x="71" y="22" width="2489" height="1418" />
     </state>
-    <state width="1230" height="409" key="GridCell.Tab.0.right/71.22.2489.1418@71.22.2489.1418" timestamp="1611606487518" />
+    <state width="1230" height="409" key="GridCell.Tab.0.right/71.22.2489.1418@71.22.2489.1418" timestamp="1611606911140" />
+    <state x="325" y="440" key="RollbackChangesDialog" timestamp="1611606809175">
+      <screen x="71" y="22" width="2489" height="1418" />
+    </state>
+    <state x="325" y="440" key="RollbackChangesDialog/71.22.2489.1418@71.22.2489.1418" timestamp="1611606809175" />
     <state x="206" y="370" key="SettingsEditor" timestamp="1611601173780">
       <screen x="71" y="22" width="2489" height="1418" />
     </state>
