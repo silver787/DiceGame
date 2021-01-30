@@ -266,12 +266,6 @@ class Settings(tk.Frame):
         elif self.master.colour == WHITE:
             current_colour = "white"
 
-        with open(LOGINS_FILE, 'r+') as f:
-            contents = f.read().replace(f"{player_one.username} {player_one.password} {str(current_colour).lower()}",
-                                        f"{player_one.username} {player_one.password} {theme}")
-        with open(LOGINS_FILE, 'w+') as f:
-
-            f.write(contents)
 
         self.master.colour = self.master.colours_dict[f"{theme}"][0]
         self.master.font_colour = self.master.colours_dict[f"{theme}"][1]
@@ -287,22 +281,7 @@ class Settings(tk.Frame):
         self.log_out_button.configure(fg="black")
 
     def change_volume(self, volume):
-
-        if self.master.colour == BLUE:
-            current_colour = "blue"
-        elif self.master.colour == GREEN:
-            current_colour = "green"
-        elif self.master.colour == BLACK:
-            current_colour = "green"
-        elif self.master.colour == WHITE:
-            current_colour = "white"
-
-        with open(LOGINS_FILE) as f:
-            contents = f.read().replace(
-                f"{player_one.username} {player_one.password} {str(current_colour).lower()} {round(pygame.mixer.music.get_volume(), 1)}",
-                f"{player_one.username} {player_one.password} {str(current_colour).lower()} {round((float(volume) / 100), 1)}")
-        with open(LOGINS_FILE, 'w+') as f:
-            f.write(contents)
+        database.update_user_volume(player_one.username, float(int(volume) / 100))
 
         pygame.mixer.music.set_volume(float(int(volume) / 100))
 
