@@ -131,7 +131,9 @@ class PlayerOneCreateAccountPage(tk.Frame):
         length, and do not use a username owned by another player in the logins file"""
         global player_one
 
-        if not database.does_user_exist(username) and password == confirm_password and :
+        valid = True if 2 < len(username) < 15 and 2 < len(password) < 15 else False
+
+        if not database.does_user_exist(username) and password == confirm_password and valid:
             database.add_user(username, password, 'blue', 0.2)
             player_one = Player(username, password)
 
