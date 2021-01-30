@@ -7,6 +7,8 @@ from random import randint
 from tkinter import messagebox
 import pygame
 from Data.constants import *
+import Data.database as database
+import Data.security as security
 
 
 
@@ -63,16 +65,13 @@ class PlayerOneLoginPage(tk.Frame):
     def check_login(self, username, password):
         """A method used as a form of validation to make sure the users details are correct, when they try to log in"""
         global player_one
-        found = False
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                if x.split(" ")[0] == username and x.split(" ")[1] == password:
-                    found = True
-                    colour = x.split(" ")[2]
-                    volume = x.split(" ")[3]
 
-        if found:
+
+        if database.check_user(username, password):
             player_one = Player(username, password)
+            colour = database.get_user_details(player_one.username)[2]
+            volume = database.get_user_details(player_one.username)[3]
+
             self.master.colour = self.master.colours_dict[f"{colour}"][0]
             self.master.font_colour = self.master.colours_dict[f"{colour}"][1]
             self.master.dice = self.master.colours_dict[f"{colour}"][2]
@@ -134,24 +133,20 @@ class PlayerOneCreateAccountPage(tk.Frame):
         length, and do not use a username owned by another player in the logins file"""
         global player_one
 
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                found = True if x.split(" ")[0] == username else False
+        if not database.does_user_exist(username):
+            if password == confirm_password
+                if security.password_check(password):
+                    database.add_user(username, password, 'blue', 0.2)
+                    player_one = Player(username, password)
 
-        valid = True if 2 < len(username) < 15 and 2 < len(password) < 15 else False
-
-        with open(LOGINS_FILE, "a+") as f:
-
-            if not found and password == confirm_password and valid:
-                f.write(f"\n{username} {password} blue 0.2")
-                player_one = Player(username, password)
-                self.master.switch_frame(GameMenu)
-
+        else:
             elif not self.alert_made:
-                alert_label = tk.Label(self,
-                                       text="Sorry, the input you entered was invalid\nPlease try again.", fg="orange",
-                                       bg=self.master.colour[1]).pack()
-                self.alert_made = True
+            alert_label = tk.Label(self,
+                                   text="Sorry, the username or password you entered was incorrect."
+                                        "\nPlease try again.",
+                                   fg="orange", bg=self.master.colour[1]).pack()
+            self.alert_made = True
+
 
 
 class GameMenu(tk.Frame):

@@ -11,7 +11,7 @@ WINDOW_HEIGHT = 600
 LOGINS_FILE = "Data/logins.txt"
 HIGH_SCORES_FILE = "Data/high_scores.txt"
 
-BLUE_DICE = ["Images/blue_die_12.jpg", "gitimages/blue_die_22.jpg",
+BLUE_DICE = ["Images/blue_die_12.jpg", "Images/blue_die_22.jpg",
              "Images/blue_die_32.jpg", "Images/blue_die_42.jpg", "Images/blue_die_52.jpg", "Images/blue_die_62.jpg"]
 GREEN_DICE = ["Images/green_die_12.jpg", "Images/green_die_22.jpg",
               "Images/green_die_32.jpg", "Images/green_die_42.jpg", "Images/green_die_52.jpg", "Images/green_die_62.jpg"]

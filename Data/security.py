@@ -1,4 +1,5 @@
 import bcrypt
+import re
 
 
 def hash(password):
@@ -39,11 +40,4 @@ def password_check(password):
     # overall result
     password_ok = not (length_error or digit_error or uppercase_error or lowercase_error or symbol_error)
 
-    return {
-        'password_ok': password_ok,
-        'length_error': length_error,
-        'digit_error': digit_error,
-        'uppercase_error': uppercase_error,
-        'lowercase_error': lowercase_error,
-        'symbol_error': symbol_error,
-    }
+    return password_ok
