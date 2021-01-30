@@ -10,6 +10,8 @@ from Data.constants import *
 import Data.database as database
 import Data.security as security
 
+database.reveal_users_table()
+
 
 class Player:
     """A class that represents players for the Game, and so has all neccessary attributes"""
@@ -136,6 +138,7 @@ class PlayerOneCreateAccountPage(tk.Frame):
         if not database.does_user_exist(username) and password == confirm_password and valid:
             database.add_user(username, password, 'blue', 0.2)
             player_one = Player(username, password)
+            self.master.switch_frame(GameMenu)
 
         elif not self.alert_made:
             alert_label = tk.Label(self,

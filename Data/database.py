@@ -70,6 +70,20 @@ def get_user_details(username):
     return details
 
 
+def reveal_users_table():
+    conn = sqlite3.connect('Data/user_info.db')
+    c = conn.cursor()
+
+    c.execute("SELECT rowid, * FROM users")
+    print('____USERS TABLE____')
+    for i in c.fetchall():
+        print(i)
+
+    conn.commit()
+    conn.close()
+
+
+
 def add_highscore(username, highscore):
     conn = sqlite3.connect('Data/high_scores.db')
     c = conn.cursor()
@@ -92,26 +106,16 @@ def show_ten_highscores():
     return highscores
 
 
-"""
-conn = sqlite3.connect('Data/high_scores.db')
-c = conn.cursor()
+def reveal_scores_table():
+    conn = sqlite3.connect('Data/high_scores.db')
+    c = conn.cursor()
 
-c.execute("SELECT rowid, * FROM scores")
-print('____HIGHSCORES TABLE____')
-for i in c.fetchall():
-    print(i)
+    c.execute("SELECT rowid, * FROM scores")
+    print('____HIGHSCORES TABLE____')
+    for i in c.fetchall():
+        print(i)
 
-conn.commit()
-conn.close()"""
+    conn.commit()
+    conn.close()
 
-"""
-conn = sqlite3.connect('Data/user_info.db')
-c = conn.cursor()
 
-c.execute("SELECT rowid, * FROM users")
-print('____USERS TABLE____')
-for i in c.fetchall():
-    print(i)
-
-conn.commit()
-conn.close()"""
