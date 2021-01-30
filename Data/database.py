@@ -1,15 +1,13 @@
 import sqlite3
+import Data.security
 
-conn = sqlite3.connect('high_scores.db')
-cursor = conn.cursor()
 
-cursor.execute("""CREATE TABLE customers (
-        username text,
-        password text,
-        
-    )""")
+def add_user(username, password, theme, volume):
+    conn = sqlite3.connect('Data/user_info.db')
+    c = conn.cursor()
 
-cursor.execute("INSERT INTO customers VALUES ('John', 'Elder', 'john@codemy.com')")
+    c.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (username, password, theme, volume))
 
-conn.commit()
-conn.close()
+
+    conn.commit()
+    conn.close()
