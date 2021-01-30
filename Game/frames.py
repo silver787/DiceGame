@@ -11,7 +11,6 @@ import Data.database as database
 import Data.security as security
 
 
-
 class Player:
     """A class that represents players for the Game, and so has all neccessary attributes"""
 
@@ -65,7 +64,6 @@ class PlayerOneLoginPage(tk.Frame):
     def check_login(self, username, password):
         """A method used as a form of validation to make sure the users details are correct, when they try to log in"""
         global player_one
-
 
         if database.check_user(username, password):
             player_one = Player(username, password)
@@ -133,20 +131,16 @@ class PlayerOneCreateAccountPage(tk.Frame):
         length, and do not use a username owned by another player in the logins file"""
         global player_one
 
-        if not database.does_user_exist(username):
-            if password == confirm_password
-                if security.password_check(password):
-                    database.add_user(username, password, 'blue', 0.2)
-                    player_one = Player(username, password)
+        if not database.does_user_exist(username) and password == confirm_password and :
+            database.add_user(username, password, 'blue', 0.2)
+            player_one = Player(username, password)
 
-        else:
-            elif not self.alert_made:
+        elif not self.alert_made:
             alert_label = tk.Label(self,
                                    text="Sorry, the username or password you entered was incorrect."
                                         "\nPlease try again.",
                                    fg="orange", bg=self.master.colour[1]).pack()
             self.alert_made = True
-
 
 
 class GameMenu(tk.Frame):
@@ -182,6 +176,7 @@ class GameMenu(tk.Frame):
 
 class Settings(tk.Frame):
     """A class that allows for the creation of the settings, page as it inherits from tk.Frame"""
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -329,6 +324,7 @@ class Settings(tk.Frame):
 
 class Rules(tk.Frame):
     """A class that creates the rules page, shows the rules for the Game on screen"""
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -354,6 +350,7 @@ class Rules(tk.Frame):
 
 class PlayerTwoLoginPage(tk.Frame):
     """A class that allows player two to login and play the duo Game"""
+
     def __init__(self, master):
         self.master = master
 
@@ -417,6 +414,7 @@ class PlayerTwoLoginPage(tk.Frame):
 
 class PlayerTwoCreateAccountPage(tk.Frame):
     "A class that allows player two to optionally create a page, if they cannot don't wont to login"
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -484,6 +482,7 @@ class PlayerTwoCreateAccountPage(tk.Frame):
 
 class DuoGame(tk.Frame):
     "A class that creates an instance of the duo Game"
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -682,6 +681,7 @@ class DuoGame(tk.Frame):
 
 class GameOverFrame(tk.Frame):
     """A class that shows the results of the Game including the players highscores"""
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -729,6 +729,7 @@ class GameOverFrame(tk.Frame):
 
 class OnlineGameInitPage(tk.Frame):
     "A class that creates a page that asks for the details required for the online Game"
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -761,6 +762,7 @@ class OnlineGameInitPage(tk.Frame):
 
 class OnlineGamePage(tk.Frame):
     "A page that creates an instance of the online Game"
+
     def __init__(self, master, server_ip):
         self.master = master
         self.server_ip = server_ip
@@ -999,6 +1001,7 @@ class OnlineGamePage(tk.Frame):
 
 class GameOverFrameOnline(tk.Frame):
     """A class that shows the results of the online Game"""
+
     def __init__(self, master, p1_score, p2, p2_score):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,

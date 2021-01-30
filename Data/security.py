@@ -10,7 +10,7 @@ def check_hash(password, hash):
     return True if bcrypt.checkpw(password.encode('utf-8'), hash) else False
 
 
-def password_check(password):
+def password_check_hard(password):
     """
     Verify the strength of 'password'
     Returns a dict indicating the wrong criteria
