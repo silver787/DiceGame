@@ -8,7 +8,8 @@ def hash(password):
 def check_hash(password, hash):
     return True if bcrypt.checkpw(password.encode('utf-8'), hash) else False
 
-
+def check_pwd(pwd):
+    if
 
 
 
