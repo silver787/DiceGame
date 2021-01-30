@@ -11,7 +11,7 @@ WINDOW_HEIGHT = 600
 LOGINS_FILE = "data/logins.txt"
 HIGH_SCORES_FILE = "data/high_scores.txt"
 
-BLUE_DICE = ["images/blue_die_12.jpg", "images/blue_die_22.jpg",
+BLUE_DICE = ["images/blue_die_12.jpg", "gitimages/blue_die_22.jpg",
              "images/blue_die_32.jpg", "images/blue_die_42.jpg", "images/blue_die_52.jpg", "images/blue_die_62.jpg"]
 GREEN_DICE = ["images/green_die_12.jpg", "images/green_die_22.jpg",
               "images/green_die_32.jpg", "images/green_die_42.jpg", "images/green_die_52.jpg", "images/green_die_62.jpg"]
@@ -24,4 +24,3 @@ ALL_DICE = [BLUE_DICE, GREEN_DICE, BLACK_DICE, WHITE_DICE]
 
 MUSIC_FILE = "music/bensound-thejazzpiano_2.mp3"
 
-nice = 'whatisup'
