@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import ImageTk, Image
 from Data.constants import *
 from frames import *
+import itertools
 
 
 class Root(tk.Tk):
