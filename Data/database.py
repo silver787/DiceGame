@@ -70,12 +70,46 @@ def get_user_details(username):
     return details
 
 
+def add_highscore(username, highscore):
+    conn = sqlite3.connect('Data/high_scores.db')
+    c = conn.cursor()
+
+    c.execute("INSERT INTO scores VALUES (?, ?)", (username, highscore))
+
+    conn.commit()
+    conn.close()
+
+
+def show_ten_highscores():
+    conn = sqlite3.connect('Data/high_scores.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM scores ORDER BY score DESC")
+    highscores = c.fetchall()
+
+    conn.commit()
+    conn.close()
+    return highscores
+
+
+"""
+conn = sqlite3.connect('Data/high_scores.db')
+c = conn.cursor()
+
+c.execute("SELECT rowid, * FROM scores")
+print('____HIGHSCORES TABLE____')
+for i in c.fetchall():
+    print(i)
+
+conn.commit()
+conn.close()"""
+
 """
 conn = sqlite3.connect('Data/user_info.db')
 c = conn.cursor()
 
 c.execute("SELECT rowid, * FROM users")
-print('____TABLE____')
+print('____USERS TABLE____')
 for i in c.fetchall():
     print(i)
 
