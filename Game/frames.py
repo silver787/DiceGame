@@ -7,7 +7,10 @@ from random import randint
 from tkinter import messagebox
 import pygame
 from Data.constants import *
+import Data.database as database
+import Data.security as security
 
+database.reveal_users_table()
 
 
 class Player:
@@ -63,16 +66,12 @@ class PlayerOneLoginPage(tk.Frame):
     def check_login(self, username, password):
         """A method used as a form of validation to make sure the users details are correct, when they try to log in"""
         global player_one
-        found = False
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                if x.split(" ")[0] == username and x.split(" ")[1] == password:
-                    found = True
-                    colour = x.split(" ")[2]
-                    volume = x.split(" ")[3]
 
-        if found:
+        if database.check_user(username, password):
             player_one = Player(username, password)
+            colour = database.get_user_details(player_one.username)[2]
+            volume = database.get_user_details(player_one.username)[3]
+
             self.master.colour = self.master.colours_dict[f"{colour}"][0]
             self.master.font_colour = self.master.colours_dict[f"{colour}"][1]
             self.master.dice = self.master.colours_dict[f"{colour}"][2]
@@ -134,24 +133,19 @@ class PlayerOneCreateAccountPage(tk.Frame):
         length, and do not use a username owned by another player in the logins file"""
         global player_one
 
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                found = True if x.split(" ")[0] == username else False
-
         valid = True if 2 < len(username) < 15 and 2 < len(password) < 15 else False
 
-        with open(LOGINS_FILE, "a+") as f:
+        if not database.does_user_exist(username) and password == confirm_password and valid:
+            database.add_user(username, password, 'blue', 0.2)
+            player_one = Player(username, password)
+            self.master.switch_frame(GameMenu)
 
-            if not found and password == confirm_password and valid:
-                f.write(f"\n{username} {password} blue 0.2")
-                player_one = Player(username, password)
-                self.master.switch_frame(GameMenu)
-
-            elif not self.alert_made:
-                alert_label = tk.Label(self,
-                                       text="Sorry, the input you entered was invalid\nPlease try again.", fg="orange",
-                                       bg=self.master.colour[1]).pack()
-                self.alert_made = True
+        elif not self.alert_made:
+            alert_label = tk.Label(self,
+                                   text="Sorry, the username or password you entered was incorrect."
+                                        "\nPlease try again.",
+                                   fg="orange", bg=self.master.colour[1]).pack()
+            self.alert_made = True
 
 
 class GameMenu(tk.Frame):
@@ -187,6 +181,7 @@ class GameMenu(tk.Frame):
 
 class Settings(tk.Frame):
     """A class that allows for the creation of the settings, page as it inherits from tk.Frame"""
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -271,12 +266,8 @@ class Settings(tk.Frame):
         elif self.master.colour == WHITE:
             current_colour = "white"
 
-        with open(LOGINS_FILE, 'r+') as f:
-            contents = f.read().replace(f"{player_one.username} {player_one.password} {str(current_colour).lower()}",
-                                        f"{player_one.username} {player_one.password} {theme}")
-        with open(LOGINS_FILE, 'w+') as f:
+        database.update_user_theme(player_one.username, theme)
 
-            f.write(contents)
 
         self.master.colour = self.master.colours_dict[f"{theme}"][0]
         self.master.font_colour = self.master.colours_dict[f"{theme}"][1]
@@ -292,22 +283,7 @@ class Settings(tk.Frame):
         self.log_out_button.configure(fg="black")
 
     def change_volume(self, volume):
-
-        if self.master.colour == BLUE:
-            current_colour = "blue"
-        elif self.master.colour == GREEN:
-            current_colour = "green"
-        elif self.master.colour == BLACK:
-            current_colour = "green"
-        elif self.master.colour == WHITE:
-            current_colour = "white"
-
-        with open(LOGINS_FILE) as f:
-            contents = f.read().replace(
-                f"{player_one.username} {player_one.password} {str(current_colour).lower()} {round(pygame.mixer.music.get_volume(), 1)}",
-                f"{player_one.username} {player_one.password} {str(current_colour).lower()} {round((float(volume) / 100), 1)}")
-        with open(LOGINS_FILE, 'w+') as f:
-            f.write(contents)
+        database.update_user_volume(player_one.username, float(int(volume) / 100))
 
         pygame.mixer.music.set_volume(float(int(volume) / 100))
 
@@ -334,6 +310,7 @@ class Settings(tk.Frame):
 
 class Rules(tk.Frame):
     """A class that creates the rules page, shows the rules for the Game on screen"""
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -359,6 +336,7 @@ class Rules(tk.Frame):
 
 class PlayerTwoLoginPage(tk.Frame):
     """A class that allows player two to login and play the duo Game"""
+
     def __init__(self, master):
         self.master = master
 
@@ -400,21 +378,14 @@ class PlayerTwoLoginPage(tk.Frame):
 
     def check_login(self, username, password):
         global player_two
-        found = False
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                if x.split(" ")[0] == username and x.split(" ")[1] == password:
-                    found = True
-                    colour = x.split(" ")[2]
-                    volume = x.split(" ")[3]
 
-        if found:
+        if database.check_user(username, password):
             player_two = Player(username, password)
             self.master.switch_frame(DuoGame)
 
         elif not self.alert_made:
             alert_label = tk.Label(self,
-                                   text="Sorry, the username or password you entered were incorrect."
+                                   text="Sorry, the username or password you entered was incorrect."
                                         "\nPlease try again.",
                                    fg="orange", bg=self.master.colour[1]).pack()
             self.alert_made = True
@@ -422,6 +393,7 @@ class PlayerTwoLoginPage(tk.Frame):
 
 class PlayerTwoCreateAccountPage(tk.Frame):
     "A class that allows player two to optionally create a page, if they cannot don't wont to login"
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -467,28 +439,24 @@ class PlayerTwoCreateAccountPage(tk.Frame):
         """A function that checks player two's credentials are valid, if they are a new account will be made"""
         global player_two
 
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                found = True if x.split(" ")[0] == username else False
-
         valid = True if 2 < len(username) < 15 and 2 < len(password) < 15 else False
 
-        with open(LOGINS_FILE, "a+") as f:
+        if not database.does_user_exist(username) and password == confirm_password and valid:
+            player_two = Player(username, password)
+            self.master.switch_frame(DuoGame)
 
-            if not found and password == confirm_password and valid:
-                f.write(f"\n{username} {password} blue 0.2")
-                player_two = Player(username, password)
-                self.master.switch_frame(DuoGame)
 
-            elif not self.alert_made:
-                alert_label = tk.Label(self,
-                                       text="Sorry, the input you entered was invalid\nPlease try again.", fg="orange",
-                                       bg=self.master.colour[1]).pack()
-                self.alert_made = True
+        elif not self.alert_made:
+            alert_label = tk.Label(self,
+                                   text="Sorry, the username or password you entered was incorrect."
+                                        "\nPlease try again.",
+                                   fg="orange", bg=self.master.colour[1]).pack()
+            self.alert_made = True
 
 
 class DuoGame(tk.Frame):
     "A class that creates an instance of the duo Game"
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -687,6 +655,7 @@ class DuoGame(tk.Frame):
 
 class GameOverFrame(tk.Frame):
     """A class that shows the results of the Game including the players highscores"""
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -698,20 +667,10 @@ class GameOverFrame(tk.Frame):
         master.unbind("<Key-Shift_L>")
         master.unbind("<Key-Return>")
 
-        with open(HIGH_SCORES_FILE, 'a+') as f:
-            f.write(f"{player_one.username} {player_one.score}\n{player_two.username} {player_two.score}\n")
+        database.add_highscore(player_one.username, player_one.score)
+        database.add_highscore(player_two.username, player_two.score)
 
-        with open(HIGH_SCORES_FILE, 'r') as f:
-            result = ""
-            players_and_scores = f.read().split("\n")
-            players_and_scores.pop(-1)
-            players_and_scores = sorted(players_and_scores, key=lambda score: int(score.split(' ')[1]), reverse=True)
-
-            if len(players_and_scores) >= 10:
-                for i in range(10):
-                    result += f"{players_and_scores[i].split(' ')[0]}: {players_and_scores[i].split(' ')[1]}\n"
-            else:
-                result = "Sorry, there are not enough scores to show."
+        result = '\n'.join(database.show_ten_highscores())
 
         winner = f"{player_one.username}" if player_one.score > player_two.score else f"{player_two.username}"
 
@@ -734,6 +693,7 @@ class GameOverFrame(tk.Frame):
 
 class OnlineGameInitPage(tk.Frame):
     "A class that creates a page that asks for the details required for the online Game"
+
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -766,6 +726,7 @@ class OnlineGameInitPage(tk.Frame):
 
 class OnlineGamePage(tk.Frame):
     "A page that creates an instance of the online Game"
+
     def __init__(self, master, server_ip):
         self.master = master
         self.server_ip = server_ip
@@ -1004,6 +965,7 @@ class OnlineGamePage(tk.Frame):
 
 class GameOverFrameOnline(tk.Frame):
     """A class that shows the results of the online Game"""
+
     def __init__(self, master, p1_score, p2, p2_score):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -1012,17 +974,11 @@ class GameOverFrameOnline(tk.Frame):
 
         master.unbind("<Key-Shift_L>")
 
-        with open(HIGH_SCORES_FILE, 'r') as f:
-            result = ""
-            players_and_scores = f.read().split("\n")
-            players_and_scores.pop(-1)
-            players_and_scores = sorted(players_and_scores, key=lambda score: int(score.split(' ')[1]), reverse=True)
+        database.add_highscore(player_one.username, player_one.score)
+        database.add_highscore(player_two.username, player_two.score)
 
-            if len(players_and_scores) >= 10:
-                for x, i in enumerate(range(10)):
-                    result += f"{x + 1}: {players_and_scores[i].split(' ')[0]}: {players_and_scores[i].split(' ')[1]}\n"
-            else:
-                result_text = "Sorry, there are not enough scores to show."
+        result = '\n'.join(database.show_ten_highscores())
+
 
         if p1_score > p2_score:
             result_text = f"Congratulations you won. The final score was: {p1_score}:{p2_score}"
