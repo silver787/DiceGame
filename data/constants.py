@@ -23,3 +23,5 @@ WHITE_DICE = ["images/white_die_12.jpg", "images/white_die_22.jpg",
 ALL_DICE = [BLUE_DICE, GREEN_DICE, BLACK_DICE, WHITE_DICE]
 
 MUSIC_FILE = "music/bensound-thejazzpiano_2.mp3"
+
+nice = 'whatisup'
