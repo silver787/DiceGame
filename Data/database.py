@@ -100,6 +100,7 @@ def show_ten_highscores():
 
     c.execute("SELECT * FROM scores ORDER BY score DESC")
     highscores = c.fetchall()
+    highscores = [f'{i[0]}: {i[1]}' for i in highscores]
 
     conn.commit()
     conn.close()

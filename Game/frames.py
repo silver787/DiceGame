@@ -266,6 +266,8 @@ class Settings(tk.Frame):
         elif self.master.colour == WHITE:
             current_colour = "white"
 
+        database.update_user_theme(player_one.username, theme)
+
 
         self.master.colour = self.master.colours_dict[f"{theme}"][0]
         self.master.font_colour = self.master.colours_dict[f"{theme}"][1]
@@ -665,20 +667,10 @@ class GameOverFrame(tk.Frame):
         master.unbind("<Key-Shift_L>")
         master.unbind("<Key-Return>")
 
-        with open(HIGH_SCORES_FILE, 'a+') as f:
-            f.write(f"{player_one.username} {player_one.score}\n{player_two.username} {player_two.score}\n")
+        database.add_highscore(player_one.username, player_one.score)
+        database.add_highscore(player_two.username, player_two.score)
 
-        with open(HIGH_SCORES_FILE, 'r') as f:
-            result = ""
-            players_and_scores = f.read().split("\n")
-            players_and_scores.pop(-1)
-            players_and_scores = sorted(players_and_scores, key=lambda score: int(score.split(' ')[1]), reverse=True)
-
-            if len(players_and_scores) >= 10:
-                for i in range(10):
-                    result += f"{players_and_scores[i].split(' ')[0]}: {players_and_scores[i].split(' ')[1]}\n"
-            else:
-                result = "Sorry, there are not enough scores to show."
+        result = '\n'.join(database.show_ten_highscores())
 
         winner = f"{player_one.username}" if player_one.score > player_two.score else f"{player_two.username}"
 
@@ -982,17 +974,11 @@ class GameOverFrameOnline(tk.Frame):
 
         master.unbind("<Key-Shift_L>")
 
-        with open(HIGH_SCORES_FILE, 'r') as f:
-            result = ""
-            players_and_scores = f.read().split("\n")
-            players_and_scores.pop(-1)
-            players_and_scores = sorted(players_and_scores, key=lambda score: int(score.split(' ')[1]), reverse=True)
+        database.add_highscore(player_one.username, player_one.score)
+        database.add_highscore(player_two.username, player_two.score)
 
-            if len(players_and_scores) >= 10:
-                for x, i in enumerate(range(10)):
-                    result += f"{x + 1}: {players_and_scores[i].split(' ')[0]}: {players_and_scores[i].split(' ')[1]}\n"
-            else:
-                result_text = "Sorry, there are not enough scores to show."
+        result = '\n'.join(database.show_ten_highscores())
+
 
         if p1_score > p2_score:
             result_text = f"Congratulations you won. The final score was: {p1_score}:{p2_score}"
