@@ -1,11 +1,9 @@
 import bcrypt
 
-password = b"SecretPassword55"
 
-hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+def hash(password):
+    return bcrypt.hashpw(password, gensalt())
 
-if bcrypt.checkpw(password, hashed):
-    print("It matches")
 
-else:
-    print('no')
+def check_hash(password, hash):
+    return True if bcrypt.checkpw(password, hash) else False
