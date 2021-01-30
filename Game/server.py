@@ -1,7 +1,7 @@
 import socket
 import pickle
 import _thread
-from game import OnlineGame
+from Game import OnlineGame
 import time
 
 host = socket.gethostname()

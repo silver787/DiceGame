@@ -6,12 +6,12 @@ import tkinter as tk
 from random import randint
 from tkinter import messagebox
 import pygame
-from data.constants import *
+from Data.constants import *
 
 
 
 class Player:
-    """A class that represents players for the game, and so has all neccessary attributes"""
+    """A class that represents players for the Game, and so has all neccessary attributes"""
 
     def __init__(self, username, password):
         self.username = username
@@ -20,7 +20,7 @@ class Player:
 
 
 class Game:
-    """A class used during the playing of 'duo game'. Online game's class is stored in a separate file, so the server can access it independently"""
+    """A class used during the playing of 'duo Game'. Online Game's class is stored in a separate file, so the server can access it independently"""
 
     def __init__(self):
         self.round = 0
@@ -155,7 +155,7 @@ class PlayerOneCreateAccountPage(tk.Frame):
 
 
 class GameMenu(tk.Frame):
-    "A class used to display the main menu page of the game to the root window(tk.Tk()), contains mainly widget instances, such a button and entries"
+    "A class used to display the main menu page of the Game to the root window(tk.Tk()), contains mainly widget instances, such a button and entries"
 
     def __init__(self, master):
         self.master = master
@@ -333,7 +333,7 @@ class Settings(tk.Frame):
 
 
 class Rules(tk.Frame):
-    """A class that creates the rules page, shows the rules for the game on screen"""
+    """A class that creates the rules page, shows the rules for the Game on screen"""
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -350,7 +350,7 @@ class Rules(tk.Frame):
                                           fg=self.master.font_colour, bg=self.master.colour[1]).pack(pady=40)
 
         self.rules_label = tk.Label(self,
-                                    text='- In the dice game there are two dice, one belonging to each player.\n\n- Each player takes turns to roll their dice, once you receive a roll,\n\ndifferent points will be added and subtracted depending on its nature.\n\n- If a player rolls an even number, 10 points are added to their score.\n\n- If a player rolls an odd number, then 5 points are subtracted from their score,\n\nunless it would cause their score to become negative.\n\n- If a player rolls a double, they receive an additional roll.\n\n- There are five rounds, where each rounds of each player rolling their dice once.\n\n- If both players scores are the same at the end of the five rounds,\n\nthen additional rounds will commence until the scores are no longer the same. ',
+                                    text='- In the dice Game there are two dice, one belonging to each player.\n\n- Each player takes turns to roll their dice, once you receive a roll,\n\ndifferent points will be added and subtracted depending on its nature.\n\n- If a player rolls an even number, 10 points are added to their score.\n\n- If a player rolls an odd number, then 5 points are subtracted from their score,\n\nunless it would cause their score to become negative.\n\n- If a player rolls a double, they receive an additional roll.\n\n- There are five rounds, where each rounds of each player rolling their dice once.\n\n- If both players scores are the same at the end of the five rounds,\n\nthen additional rounds will commence until the scores are no longer the same. ',
                                     bg=self.master.colour[1], fg=self.master.font_colour).pack(pady=10)
 
         self.watermark_label = tk.Label(self, text="© Toby Hogan 2020", bg=self.master.colour[1],
@@ -358,7 +358,7 @@ class Rules(tk.Frame):
 
 
 class PlayerTwoLoginPage(tk.Frame):
-    """A class that allows player two to login and play the duo game"""
+    """A class that allows player two to login and play the duo Game"""
     def __init__(self, master):
         self.master = master
 
@@ -376,7 +376,7 @@ class PlayerTwoLoginPage(tk.Frame):
                                                                                               padx=5, pady=5)
         self.player_two_login_label = tk.Label(self, text="Player Two Login", font=(FONT, TITLE_FONT_SIZE),
                                                fg=master.font_colour, bg=master.colour[1]).pack(pady=5)
-        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the game.",
+        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the Game.",
                                    bg=master.colour[1], fg=master.font_colour).pack(pady=5)
         self.username_label = tk.Label(self, text="Username: ", bg=master.colour[1], fg=master.font_colour).pack(
             pady=10)
@@ -438,7 +438,7 @@ class PlayerTwoCreateAccountPage(tk.Frame):
                                                                                                         padx=5, pady=5)
         self.create_account_label = tk.Label(self, text="Create Account", font=(FONT, TITLE_FONT_SIZE),
                                              bg=self.master.colour[1], fg=self.master.font_colour).pack()
-        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the game.",
+        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the Game.",
                                    bg=master.colour[1], fg=master.font_colour).pack(pady=15)
         self.username_label = tk.Label(self, text="New Username: ", bg=self.master.colour[1],
                                        fg=self.master.font_colour).pack(pady=10)
@@ -488,7 +488,7 @@ class PlayerTwoCreateAccountPage(tk.Frame):
 
 
 class DuoGame(tk.Frame):
-    "A class that creates an instance of the duo game"
+    "A class that creates an instance of the duo Game"
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -686,7 +686,7 @@ class DuoGame(tk.Frame):
 
 
 class GameOverFrame(tk.Frame):
-    """A class that shows the results of the game including the players highscores"""
+    """A class that shows the results of the Game including the players highscores"""
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -733,7 +733,7 @@ class GameOverFrame(tk.Frame):
 
 
 class OnlineGameInitPage(tk.Frame):
-    "A class that creates a page that asks for the details required for the online game"
+    "A class that creates a page that asks for the details required for the online Game"
     def __init__(self, master):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -749,7 +749,7 @@ class OnlineGameInitPage(tk.Frame):
         self.online_game_title_label = tk.Label(self, text="Online Game", font=(FONT, 30),
                                                 fg=self.master.font_colour, bg=self.master.colour[1]).pack(pady=20)
         self.online_game_info_label = tk.Label(self,
-                                               text="Hi, welcome to online game!\nOnline game is just like duo game,  except\nyou play against people over a network\ninstead of on a single machine.\nHave fun!",
+                                               text="Hi, welcome to online Game!\nOnline Game is just like duo Game,  except\nyou play against people over a network\ninstead of on a single machine.\nHave fun!",
                                                fg=self.master.font_colour, bg=self.master.colour[1]).pack(pady=20)
         self.server_ip_label = tk.Label(self, text="Server IP:\n\ne.g. 192.168.1.1", fg=self.master.font_colour,
                                         bg=self.master.colour[1]).pack(pady=20)
@@ -765,7 +765,7 @@ class OnlineGameInitPage(tk.Frame):
 
 
 class OnlineGamePage(tk.Frame):
-    "A page that creates an instance of the online game"
+    "A page that creates an instance of the online Game"
     def __init__(self, master, server_ip):
         self.master = master
         self.server_ip = server_ip
@@ -1003,7 +1003,7 @@ class OnlineGamePage(tk.Frame):
 
 
 class GameOverFrameOnline(tk.Frame):
-    """A class that shows the results of the online game"""
+    """A class that shows the results of the online Game"""
     def __init__(self, master, p1_score, p2, p2_score):
         self.master = master
         tk.Frame.__init__(self, self.master, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
