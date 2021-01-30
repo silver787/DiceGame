@@ -397,21 +397,14 @@ class PlayerTwoLoginPage(tk.Frame):
 
     def check_login(self, username, password):
         global player_two
-        found = False
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                if x.split(" ")[0] == username and x.split(" ")[1] == password:
-                    found = True
-                    colour = x.split(" ")[2]
-                    volume = x.split(" ")[3]
 
-        if found:
+        if database.check_user(username, password):
             player_two = Player(username, password)
             self.master.switch_frame(DuoGame)
 
         elif not self.alert_made:
             alert_label = tk.Label(self,
-                                   text="Sorry, the username or password you entered were incorrect."
+                                   text="Sorry, the username or password you entered was incorrect."
                                         "\nPlease try again.",
                                    fg="orange", bg=self.master.colour[1]).pack()
             self.alert_made = True
@@ -465,24 +458,19 @@ class PlayerTwoCreateAccountPage(tk.Frame):
         """A function that checks player two's credentials are valid, if they are a new account will be made"""
         global player_two
 
-        with open(LOGINS_FILE, "r") as f:
-            for x in f:
-                found = True if x.split(" ")[0] == username else False
-
         valid = True if 2 < len(username) < 15 and 2 < len(password) < 15 else False
 
-        with open(LOGINS_FILE, "a+") as f:
+        if not database.does_user_exist(username) and password == confirm_password and valid:
+            player_two = Player(username, password)
+            self.master.switch_frame(DuoGame)
 
-            if not found and password == confirm_password and valid:
-                f.write(f"\n{username} {password} blue 0.2")
-                player_two = Player(username, password)
-                self.master.switch_frame(DuoGame)
 
-            elif not self.alert_made:
-                alert_label = tk.Label(self,
-                                       text="Sorry, the input you entered was invalid\nPlease try again.", fg="orange",
-                                       bg=self.master.colour[1]).pack()
-                self.alert_made = True
+        elif not self.alert_made:
+            alert_label = tk.Label(self,
+                                   text="Sorry, the username or password you entered was incorrect."
+                                        "\nPlease try again.",
+                                   fg="orange", bg=self.master.colour[1]).pack()
+            self.alert_made = True
 
 
 class DuoGame(tk.Frame):
