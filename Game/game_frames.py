@@ -1,6 +1,6 @@
-from Game.classes import *
-from Game.constants import *
-import Game.database as database
+from Game.game_classes import *
+from Game.game_constants import *
+import Game.game_database as database
 import tkinter as tk
 
 
@@ -16,7 +16,7 @@ class P1Login(tk.Frame):
         self.username_entry = TextEntry(self, self.parent, '', 0, 10)
         self.password_label = TextLabel(self, self.parent, 'Password: ', 0, 10)
         self.password_entry = TextEntry(self, self.parent, '*', 0, 10)
-        self.login_button = TextButton(self, self.parent, 'Ok', lambda: self.login(), 0, 20)
+        self.login_button = TextButton(self, self.parent, 'Confirm', lambda: self.login(), 0, 20)
         self.create_account_label = TextLabel(self, self.parent, "Don't have an account?\n\nCreate an account:", 0, 30)
         self.create_account_button = TextButton(self, self.parent, 'Confirm',
                                                 lambda: self.parent.switch_frame(P1Create), 0, 10)
@@ -25,6 +25,9 @@ class P1Login(tk.Frame):
     def login(self):
         global p1
 
-        if databse.check_user(self.username_entry.get(), self.password_entry.get()):
-            p1 =
+        username, password = self.username_entry.get(), self.password_entry.get()
+
+        if database.check_user(username, password):
+            p1 = Player(username, password)
+            database.reveal_users_table()
 

@@ -1,15 +1,12 @@
-from Game.constants import *
+from Game.game_constants import *
 import tkinter as tk
 
 
-
-
-
-
-
-
-
-
+class Player:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.score = 0
 
 
 

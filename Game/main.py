@@ -1,6 +1,6 @@
-from Game.constants import *
-from Game.classes import *
-from Game.frames import *
+from Game.game_constants import *
+from Game.game_classes import *
+from Game.game_frames import *
 import itertools
 import pygame
 import tkinter as tk
