@@ -1,5 +1,5 @@
 from Game.constants import *
-from Game.game_classes import *
+from Game.classes import *
 from Game.frames import *
 import itertools
 import pygame
@@ -28,7 +28,7 @@ class App(tk.Tk):
         self.font_colour = "white"
         self.dice = BLUE_DICE
         self.frame = None
-        self.switch_frame(StartPage)
+        self.switch_frame(P1Login)
 
     def switch_frame(self, frame):
         if self.frame:
@@ -36,12 +36,6 @@ class App(tk.Tk):
 
         self.frame = frame(self)
         self.frame.pack()
-
-
-
-class StartPage(tk.Frame):
-    def __init__(self, parent):
-        tk.Frame.__init__(self, parent)
 
 
 if __name__ == "__main__":
