@@ -1,5 +1,5 @@
 import sqlite3
-import Data.security as security
+import Game.security as security
 
 
 def add_user(username, password, theme, volume):
