@@ -19,7 +19,10 @@ def check_user(username, password):
     c = conn.cursor()
 
     c.execute("SELECT * FROM users WHERE username = ?", (username,))
-    valid = True if security.check_hash(password, c.fetchone()[1]) else False
+    try:
+        valid = True if security.check_hash(password, c.fetchone()[1]) else False
+    except:
+        valid = False
 
     conn.commit()
     conn.close()
@@ -46,7 +49,7 @@ def update_user_theme(user, update_to):
     conn.close()
 
 
-def does_user_exist(username):
+def user_exists(username):
     conn = sqlite3.connect('Data/user_info.db')
     c = conn.cursor()
 
@@ -78,6 +81,16 @@ def reveal_users_table():
     print('____USERS TABLE____')
     for i in c.fetchall():
         print(i)
+
+    conn.commit()
+    conn.close()
+
+
+def clear_users_table():
+    conn = sqlite3.connect('Data/user_info.db')
+    c = conn.cursor()
+
+    c.execute("DELETE FROM users")
 
     conn.commit()
     conn.close()
