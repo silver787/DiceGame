@@ -98,7 +98,7 @@ def show_ten_highscores():
     conn = sqlite3.connect('Data/high_scores.db')
     c = conn.cursor()
 
-    c.execute("SELECT * FROM scores ORDER BY score DESC")
+    c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
     highscores = c.fetchall()
     highscores = [f'{i[0]}: {i[1]}' for i in highscores]
 
