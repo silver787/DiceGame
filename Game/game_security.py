@@ -10,7 +10,7 @@ def check_hash(password, hash):
     return True if bcrypt.checkpw(password.encode('utf-8'), hash) else False
 
 
-def password_check(password):
+def password_check(password, confirm_password):
     if len(password) < 8:
         return "Password too short"
 
@@ -25,4 +25,6 @@ def password_check(password):
 
     if re.search(r"\W", password) is None:
         return "Password does not contain any symbols"
-    "holaholahola3"
+
+    if password != confirm_password:
+        return "Passwords do not match"

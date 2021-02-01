@@ -14,7 +14,6 @@ class App(tk.Tk):
 
         self.configure(bg=BLUE[0])
         self.resizable(height=False, width=False)
-        self.title("Login")
         self.geometry(
             f"{int(WINDOW_WIDTH)}x{int(WINDOW_HEIGHT)}+{int(self.winfo_screenwidth() / 2) - int(WINDOW_WIDTH / 2)}"
             f"+{int(self.winfo_screenheight() / 2) - int(WINDOW_HEIGHT / 2)}")
