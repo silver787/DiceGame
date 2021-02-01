@@ -31,3 +31,4 @@ def switch_user(parent, colour, volume):
         parent.dice = GREEN_DICE
         parent.configure(bg=parent.colour[0])
         pygame.mixer.music.set_volume(volume)
+

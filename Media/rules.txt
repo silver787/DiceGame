@@ -1,0 +1,10 @@
+- In the dice Game there are two dice, one belonging to each player.
+- Each player takes turns to roll their dice, once you receive a roll,
+ndifferent points will be added and subtracted depending on its nature.
+- If a player rolls an even number, 10 points are added to their score.
+- If a player rolls an odd number, then 5 points are subtracted from their score,
+unless it would cause their score to become negative.
+- If a player rolls a double, they receive an additional roll.
+- There are five rounds, where each rounds of each player rolling their dice once.
+- If both players scores are the same at the end of the five rounds,
+then additional rounds will commence until the scores are no longer the same.

@@ -4,6 +4,7 @@ from Game.game_functions import *
 import Game.game_security as security
 import Game.game_database as database
 import tkinter as tk
+from tkinter import messagebox
 import pygame
 
 
@@ -28,13 +29,11 @@ class P1Login(tk.Frame):
         self.watermark = WatermarkLabel(self, self.parent)
 
     def login(self):
-        global p1
-
         username, password = self.username_entry.get(), self.password_entry.get()
 
         if database.check_user(username, password):
-            p1 = Player(username)
-            colour, volume = database.get_user_details(p1.username)[2:4]
+            self.parent.p1 = Player(username)
+            colour, volume = database.get_user_details(self.parent.p1.username)[2:4]
             switch_user(self.parent, colour, volume)
             self.parent.switch_frame(GameMenu)
 
@@ -64,8 +63,6 @@ class P1Create(tk.Frame):
         self.watermark = WatermarkLabel(self, self.parent)
 
     def create_account(self):
-        global p1
-
         username, password = self.username_entry.get(), self.password_entry.get()
         confirm_password = self.confirm_password_entry.get()
 
@@ -73,7 +70,7 @@ class P1Create(tk.Frame):
 
         if pass_check_result is None:
             if not database.user_exists(username):
-                p1 = Player(username)
+                self.parent.p1 = Player(username)
                 database.add_user(username, password, 'blue', 0.2)
                 switch_user(self.parent, 'blue', 0.2)
                 self.parent.switch_frame(GameMenu)
@@ -102,7 +99,7 @@ class GameMenu(tk.Frame):
         self.pack_propagate(0)
         self.parent = parent
         self.alert_made = False
-        self.parent.title(f"Game Menu - {p1.username}")
+        self.parent.title(f"Game Menu - {self.parent.p1.username}")
 
         self.title = TitleLabel(self, self.parent, 'Game Menu', 0, 60)
         self.duo_button = MenuButton(self, self.parent, "Duo Game",
@@ -122,8 +119,7 @@ class Settings(tk.Frame):
                           bg=parent.colour[1])
         self.pack_propagate(0)
         self.parent = parent
-        self.parent.title(f"Settings - {p1.username}")
-        self.alert_made = False
+        self.parent.title(f"Settings - {self.parent.p1.username}")
 
         self.back_button = BackButton(self, self.parent, GameMenu)
         self.title = TitleLabel(self, self.parent, "Settings", 0, 30)
@@ -151,10 +147,9 @@ class Settings(tk.Frame):
         elif self.parent.colour == WHITE:
             self.white_checkbox.select()
 
-
     def change_volume(self, volume):
         pygame.mixer.music.set_volume(float(volume) / 100)
-        database.update_user_volume(p1.username, pygame.mixer.music.get_volume())
+        database.update_user_volume(self.parent.p1.username, pygame.mixer.music.get_volume())
 
     def change_theme(self, theme, button):
         self.blue_checkbox.deselect()
@@ -163,7 +158,7 @@ class Settings(tk.Frame):
         self.white_checkbox.deselect()
         button.select()
 
-        database.update_user_theme(p1.username, theme)
+        database.update_user_theme(self.parent.p1.username, theme)
         if theme == 'blue':
             self.parent.colour = BLUE
             self.parent.font_colour = 'white'
@@ -187,10 +182,29 @@ class Settings(tk.Frame):
         self.back_button.configure(fg='black')
         self.log_out_button.configure(fg='black')
 
-    def log_out():
-        pass
+    def log_out(self):
+        self.log_out_message = messagebox.askokcancel(title="Confirm", message="Are you sure you want to log out?")
+
+        if self.log_out_message:
+            del self.parent.p1
+            self.parent.colour = BLUE
+            self.parent.font_colour = 'white'
+            self.parent.dice = BLUE_DICE
+            self.parent.configure(bg=self.parent.colour[0])
+            pygame.mixer.music.set_volume(0.2)
+            self.parent.switch_frame(P1Login)
 
 
+class Rules(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
+                          bg=parent.colour[1])
+        self.pack_propagate(0)
+        self.parent = parent
+        self.parent.title(f"Rules - {self.parent.p1.username}")
 
-
-
+        self.back_button = BackButton(self, self.parent, GameMenu)
+        self.title = TitleLabel(self, self.parent, 'Rules', 0, 40)
+        self.watermark = WatermarkLabel(self, self.parent)
+        with open('rules.txt', 'r') as f:
+            self.rules_label = TextLabel(self, self.parent, f.read(), 0, 10)
