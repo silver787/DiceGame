@@ -224,7 +224,7 @@ class P2Login(tk.Frame):
     def login(self):
         username, password = self.username_entry.get(), self.password_entry.get()
 
-        if database.check_user(username, password):
+        if user_info_db.check_user(username, password):
             self.parent.p2 = Player(username)
             self.parent.switch_frame(DuoGame)
 

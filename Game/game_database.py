@@ -5,124 +5,146 @@ from Game.game_constants import *
 # generic working password: Howard64!!@
 
 
-class UserInfoDB:
-    def __init__(self, DB):
-        self.DB = DB
+def add_user(username, password, theme, volume):
+    password = security.hash(password)
+
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (username, password, theme, volume))
+
+    conn.commit()
+    conn.close()
 
 
-    def open_db(self):
-        conn = sqlite3.connect(self.DB)
-        c = conn.cursor()
+def check_user(username, password):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM users WHERE username = ?", (username,))
+    try:
+        valid = True if security.check_hash(password, c.fetchone()[1]) else False
+    except:
+        valid = False
+
+    conn.commit()
+    conn.close()
+
+    return valid
 
 
-    def close_db(self
-        self.close_db())
+def update_user_volume(user, update_to):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("UPDATE users SET volume = ? WHERE username = ?", (update_to, user))
+
+    conn.commit()
+    conn.close()
 
 
-    def add_user(self, username, password, theme, volume):
-        password = security.hash(password)
-        self.open_db()
-        c.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (username, password, theme, volume))
-        self.close_db()
+def update_user_theme(user, update_to):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("UPDATE users SET theme = ? WHERE username = ?", (update_to, user))
+
+    conn.commit()
+    conn.close()
 
 
-    def check_user(self, username, password):
-        self.open_db()
-        c.execute("SELECT * FROM users WHERE username = ?", (username,))
-        try:
-            valid = True if security.check_hash(self, password, c.fetchone()[1]) else False
-        except:
-            valid = False
-        self.close_db()
-        return valid
+def user_exists(username):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM users WHERE username = ?", (username,))
+    exists = False if c.fetchall() == [] else True
+
+    conn.commit()
+    conn.close()
+
+    return exists
 
 
-    def update_user_volume(self, user, update_to):
-        self.open_db()
-        c.execute("UPDATE users SET volume = ? WHERE username = ?", (update_to, user))
-        self.close_db()
+def get_user_details(username):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM users WHERE username = ?", (username,))
+    details = c.fetchone()
+
+    conn.commit()
+    conn.close()
+
+    return details
 
 
-    def update_user_theme(self, user, update_to):
-        self.open_db()
-        c.execute("UPDATE users SET theme = ? WHERE username = ?", (update_to, user))
-        self.close_db()
+def reveal_users_table():
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT rowid, * FROM users")
+    print('____USERS TABLE____')
+    for i in c.fetchall():
+        print(i)
+
+    conn.commit()
+    conn.close()
 
 
-    def user_exists(self, username):
-        self.open_db()
-        c.execute("SELECT * FROM users WHERE username = ?", (username,))
-        exists = False if c.fetchall() == [] else True
-        self.close_db()
-        return exists
+def clear_users_table():
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
 
+    c.execute("DELETE FROM users")
 
-    def get_user_details(self, username):
-        self.open_db()
-        c.execute("SELECT * FROM users WHERE username = ?", (self, username,))
-        details = c.fetchone()
-        self.close_db()
-        return details
-
-
-    def reveal_users_table(self):
-        self.open_db()
-        c.execute("SELECT rowid, * FROM users")
-        print('____USERS TABLE____')
-
-        for i in c.fetchall():
-            print(i)
-
-        self.close_db()
-
-
-    def clear_users_table(self):
-        self.open_db()
-        c.execute("DELETE FROM users")
-        self.close_db()
+    conn.commit()
+    conn.close()
 
 
 
-class UserScoresDb:
-    def __init__(self, DB):
-        self.DB = Db
+def add_highscore(username, highscore):
+    conn = sqlite3.connect(HIGH_SCORES_DB)
+    c = conn.cursor()
 
-    def open_db(self):
-        conn = sqlite3.connect(self.DB)
-        c = conn.cursor()
+    c.execute("INSERT INTO scores VALUES (?, ?)", (username, highscore))
 
-    def close_db(self):
-        conn.comdmit()
-        conn.close()
-
-    def add_highscore(self, username, highscore):
-        self.open_db()
-
-        c.execute("INSERT INTO scores VALUES (?, ?)", (username, highscore))
-
-        self.close_db()
+    conn.commit()
+    conn.close()
 
 
-    def show_ten_highscores(self, ):
-        self.open_db()
+def show_ten_highscores():
+    conn = sqlite3.connect(HIGH_SCORES_DB)
+    c = conn.cursor()
 
-        c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
-        highscores = c.fetchall()
-        highscores = [f'{i[0]}: {i[1]}' for i in highscores]
+    c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
+    highscores = c.fetchall()
+    highscores = [f'{i[0]}: {i[1]}' for i in highscores]
 
-        self.close_db()
-
-        return highscores
-
-
-    def reveal_scores_table(self, ):
-        self.open_db()
-
-        c.execute("SELECT rowid, * FROM scores")
-        print('____HIGHSCORES TABLE____')
-        for i in c.fetchall():
-            print(i)
-
-        self.close_db()
+    conn.commit()
+    conn.close()
+    return highscores
 
 
+def reveal_scores_table():
+    conn = sqlite3.connect(HIGH_SCORES_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT rowid, * FROM scores")
+    print('____HIGHSCORES TABLE____')
+    for i in c.fetchall():
+        print(i)
+
+    conn.commit()
+    conn.close()
+
+
+conn = sqlite3.connect('Data/saved_games.db')
+cursor = conn.cursor()
+
+cursor.execute("CREATE TABLE saved_games (game_code text, player_one text, player_one_score integer, turn integer, player_two text, player_two_score integer, round integer)")
+
+# cursor.execute("INSERT INTO customers VALUES ('John', 'Elder', 'john@codemy.com')")
+
+cursor.commit()
+cursor = conn.cursor()

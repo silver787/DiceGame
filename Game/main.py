@@ -4,7 +4,6 @@ from Game.game_frames import *
 import itertools
 import pygame
 import tkinter as tk
-from tkinter import font as tkfont
 from PIL import ImageTk, Image
 
 
