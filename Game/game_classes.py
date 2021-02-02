@@ -6,12 +6,22 @@ class Player:
     def __init__(self, username):
         self.username = username
         self.score = 0
+        self.roll_1 = 0
+        self.roll_2 = 0
+        self.calc = ''
+        self.roll_again = False
+
+    def reset(self):
+        self.roll_1 = 0
+        self.rol_2 = 0
+        self.calc = ''
+        self.roll_again = False
 
 
 class Game:
     def __init__(self):
         self.round = 0
-        self.player_turn = 1
+        self.turn = None
 
 
 class TitleLabel(tk.Label):
@@ -106,7 +116,7 @@ class ThemeCheckbox(tk.Checkbutton):
 class QuitButton(tk.Button):
     def __init__(self, parent, meta_parent, command, last_frame):
         tk.Button.__init__(self, parent, text='Quit', fg='black',
-                           bg=meta_parent.colour[1], highlightbackground=meta_parent.colour[1],
+                           bg=meta_parent.colour[1], highlightbackground=meta_parent.colour[0],
                            command=command)
 
         self.pack(anchor='nw', pady=5)
@@ -114,47 +124,47 @@ class QuitButton(tk.Button):
 
 class SaveButton(tk.Button):
     def __init__(self, parent, meta_parent, command, last_frame):
-        tk.Button.__init__(self, parent, text='Quit', fg='black',
-                           bg=meta_parent.colour[1], highlightbackground=meta_parent.colour[1],
+        tk.Button.__init__(self, parent, text='Save', fg='black',
+                           bg=meta_parent.colour[1], highlightbackground=meta_parent.colour[0],
                            command=command)
 
-        self.pack(anchor='nw', pady=5)
+        self.pack(anchor='nw')
 
 
 class GameTitle(tk.Label):
-    def __init__(self, parent, metaparent, text):
-        tk.Label.__init__(self, text="Duo Game", bg=self.parent.colour[0], fg=self.parent.font_colour,
+    def __init__(self, parent, meta_parent, text):
+        tk.Label.__init__(self, parent, text=text, bg=meta_parent.colour[0], fg=meta_parent.font_colour,
                           font=(FONT, 30))
         self.grid(column=0, row=0, columnspan=3, pady=4)
 
 
 class P1Title(tk.Label):
     def __init__(self, parent, meta_parent, text):
-        tk.Label(self, text=text, bg=self.parent.colour[0],
-                 fg=self.parent.font_colour,
-                 width=10)
+        tk.Label.__init__(self, parent, text=text, bg=meta_parent.colour[0],
+                          fg=meta_parent.font_colour,
+                          width=10)
         self.grid(column=0, row=1, sticky="N")
 
 
 class Score(tk.Label):
-    def __init__(self, parent, metaparent, text):
-        tk.Label(self, text=text,
-                 bg=self.parent.colour[0], fg=self.parent.font_colour, width=10)
+    def __init__(self, parent, meta_parent, text):
+        tk.Label.__init__(self, parent, text=text,
+                          bg=meta_parent.colour[0], fg=meta_parent.font_colour, width=10)
         self.grid(column=1, row=1, sticky="N")
 
 
 class P2Title(tk.Label):
     def __init__(self, parent, meta_parent, text):
-        tk.Label(self, text=text, bg=self.parent.colour[0],
-                 fg=self.parent.font_colour,
-                 width=10)
+        tk.Label.__init__(self, parent, text=text, bg=meta_parent.colour[0],
+                          fg=meta_parent.font_colour,
+                          width=10)
         self.grid(column=2, row=1, sticky="N")
 
 
 class P1Frame(tk.Frame):
     def __init__(self, parent, meta_parent):
-        tk.Frame.__init__(self, bg=self.parent.colour[1], width=WINDOW_WIDTH / 100 * 40,
-                 height=WINDOW_HEIGHT / 4 * 3)
+        tk.Frame.__init__(self, parent, bg=meta_parent.colour[1], width=WINDOW_WIDTH / 100 * 40,
+                          height=WINDOW_HEIGHT / 4 * 3)
         self.grid(column=0, row=2, sticky="N", padx=5)
 
         self.pack_propagate(0)
@@ -162,102 +172,92 @@ class P1Frame(tk.Frame):
 
 class BorderFrame(tk.Frame):
     def __init__(self, parent, meta_parent):
-        tk.Frame.__init__(self, bg=self.parent.colour[0], width=WINDOW_WIDTH / 100 * 2)
+        tk.Frame.__init__(self, parent, bg=meta_parent.colour[0], width=WINDOW_WIDTH / 100 * 2)
         self.grid(column=1, row=2)
 
 
-class P1Frame(tk.Frame):
+class P2Frame(tk.Frame):
     def __init__(self, parent, meta_parent):
-        tk.Frame.__init__(self, bg=self.parent.colour[1], width=WINDOW_WIDTH / 100 * 40,
-                 height=WINDOW_HEIGHT / 4 * 3)
+        tk.Frame.__init__(self, parent, bg=meta_parent.colour[1], width=WINDOW_WIDTH / 100 * 40,
+                          height=WINDOW_HEIGHT / 4 * 3)
         self.grid(column=2, row=2, sticky="N", padx=5)
         self.pack_propagate(0)
 
 
 class P1Dice1(tk.Label):
     def __init__(self, parent, meta_parent):
-        tk.Label.__init__(self.player_one_frame, bg=self.parent.colour[1],
-                 image=self.parent.dice[5])
+        tk.Label.__init__(self, parent, bg=meta_parent.colour[1],
+                          image=meta_parent.dice[5])
         self.pack(pady=5, side="top")
 
 
 class P1Dice2(tk.Label):
     def __init__(self, parent, meta_parent):
-        tk.Labe.__init__l(self.player_one_frame, bg=self.parent.colour[1],
-                 image=self.parent.dice[5])
+        tk.Label.__init__(self, parent, bg=meta_parent.colour[1],
+                         image=meta_parent.dice[5])
         self.pack(pady=5, side="top")
 
 
 class P1CalcBox(tk.Label):
-    def __init__(self, parent, meta_parent):
-        tk.Label.__init__(self.player_one_frame, text="Result:\nNothing", bg=self.parent.colour[1],
-                 fg=self.parent.font_colour,
-                 width=50, height=5)
+    def __init__(self, parent, meta_parent, text):
+        tk.Label.__init__(self, parent, text=text, bg=meta_parent.colour[1],
+                          fg=meta_parent.font_colour,
+                          width=50, height=5)
 
-        self.pack(pady=10)
+        self.pack(pady=5)
 
 
 class P2Dice1(tk.Label):
     def __init__(self, parent, meta_parent):
-        tk.Label.__init__(self.player_one_frame, bg=self.parent.colour[1],
-                 image=self.parent.dice[5])
+        tk.Label.__init__(self, parent, bg=meta_parent.colour[1],
+                          image=meta_parent.dice[5])
         self.pack(pady=5, side="top")
 
 
 class P2Dice2(tk.Label):
     def __init__(self, parent, meta_parent):
-        tk.Labe.__init__l(self.player_one_frame, bg=self.parent.colour[1],
-                          image=self.parent.dice[5])
+        tk.Label.__init__(self, parent, bg=meta_parent.colour[1],
+                          image=meta_parent.dice[5])
         self.pack(pady=5, side="top")
 
 
 class P2CalcBox(tk.Label):
     def __init__(self, parent, meta_parent, text):
-        tk.Label.__init__(self.player_two_frame, text=text, bg=self.parent.colour[1],
-                 fg=self.parent.font_colour,
-                 width=50, height=5)
-        self.pack(pady=10)
+        tk.Label.__init__(self, parent, text=text, bg=meta_parent.colour[1],
+                          fg=meta_parent.font_colour,
+                          width=50, height=5)
+        self.pack(pady=5)
 
 
 class P1RollButton(tk.Button):
-    def __init__(self, parent, meta_parent):
-        tk.Button.__init__(selfplayer_one_frame, text="ROLL!", bg=self.parent.colour[1],
-                  highlightbackground=self.parent.colour[1],
-                  command=lambda: self.roll(1))
+    def __init__(self, parent, meta_parent, command):
+        tk.Button.__init__(self, parent, text="ROLL!", bg=meta_parent.colour[1],
+                           highlightbackground=meta_parent.colour[1],
+                           command=command)
         self.pack()
 
 
 class P1Info(tk.Label):
-    def __init__(self):
-        tk.Label.__init__(self.player_one_frame, text="OR Press Left Shift!", bg=self.parent.colour[1],
-                 fg=self.parent.font_colour,
-                 height=5)
+    def __init__(self, parent, meta_parent):
+        tk.Label.__init__(self, parent, text="OR Press Left Shift!", bg=meta_parent.colour[1],
+                          fg=meta_parent.font_colour,
+                          height=5)
 
-        self.pack(pady=10)
+        self.pack()
+
 
 class P2RollButton(tk.Button):
-    def __init__(self, parent, meta_parent):
-        tk.Button.__init__(selfplayer_one_frame, text="ROLL!", bg=self.parent.colour[1],
-                  highlightbackground=self.parent.colour[1],
-                  command=lambda: self.roll(2))
+    def __init__(self, parent, meta_parent, command):
+        tk.Button.__init__(self, parent, text="ROLL!", bg=meta_parent.colour[1],
+                           highlightbackground=meta_parent.colour[1],
+                           command=command)
         self.pack()
 
 
 class P2Info(tk.Label):
-    def __init__(self):
-        tk.Label.__init__(self.player_one_frame, text="OR Press Return!", bg=self.parent.colour[1],
-                          fg=self.parent.font_colour,
+    def __init__(self, parent, meta_parent):
+        tk.Label.__init__(self, parent, text="OR Press Return!", bg=meta_parent.colour[1],
+                          fg=meta_parent.font_colour,
                           height=5)
 
-        self.pack(pady=10)
-
-
-
-
-
-
-
-
-
-
-
+        self.pack()

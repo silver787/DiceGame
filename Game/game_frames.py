@@ -3,6 +3,7 @@ from Game.game_constants import *
 from Game.game_functions import *
 import Game.game_security as security
 import Game.game_database as database
+import random
 import tkinter as tk
 from tkinter import messagebox
 import pygame
@@ -14,7 +15,7 @@ class P1Login(tk.Frame):
                           bg=parent.colour[1])
         self.pack_propagate(0)
         self.parent = parent
-        self.parent.title(Login)
+        self.parent.title('Login')
         self.alert_made = False
 
         self.title = TitleLabel(self, self.parent, 'Login', 0, 30)
@@ -23,7 +24,7 @@ class P1Login(tk.Frame):
         self.password_label = TextLabel(self, self.parent, 'Password: ', 0, 10)
         self.password_entry = TextEntry(self, self.parent, '*', 0, 10)
         self.login_button = TextButton(self, self.parent, 'Confirm', lambda: self.login(), 0, 20)
-        self.create_account_label = TextLabel(self, self.parent, 'Don't have an account?\n\nCreate an account:, 0, 30)
+        self.create_account_label = TextLabel(self, self.parent, "Don't have an account?\n\nCreate an account:", 0, 30)
         self.create_account_button = TextButton(self, self.parent, 'Confirm',
                                                 lambda: self.parent.switch_frame(P1Create), 0, 10)
         self.watermark = WatermarkLabel(self, self.parent)
@@ -225,7 +226,7 @@ class P2Login(tk.Frame):
         self.password_label = TextLabel(self, self.parent, 'Password: ', 0, 10)
         self.password_entry = TextEntry(self, self.parent, '*', 0, 10)
         self.login_button = TextButton(self, self.parent, 'Confirm', lambda: self.login(), 0, 20)
-        self.create_account_label = TextLabel(self, self.parent, 'Don't have an account?\n\nCreate an account:, 0, 30)
+        self.create_account_label = TextLabel(self, self.parent, "Don't have an account?\n\nCreate an account:", 0, 30)
         self.create_account_button = TextButton(self, self.parent, 'Confirm',
                                                 lambda: self.parent.switch_frame(P2Create), 0, 10)
         self.watermark = WatermarkLabel(self, self.parent)
@@ -300,22 +301,75 @@ class DuoGame(tk.Frame):
         self.parent = parent
         self.parent.title(f'Duo Game - {self.parent.p1.username} vs {self.parent.p2.username}')
         self.game = Game()
+        self.game.turn = self.parent.p1
 
         self.quit_button = QuitButton(self, self.parent, self.quit, GameMenu)
         self.save_button = SaveButton(self, self.parent, self.save, GameMenu)
         self.title = GameTitle(self, self.parent, 'Duo Game')
+        self.p1_title = P1Title(self, self.parent, f'Player One:\n{self.parent.p1.username}')
+        self.score_title = Score(self, self.parent,
+                                 f'Round: {self.game.round}\n\nScore:\n{self.parent.p1.score} : {self.parent.p2.score}')
+        self.p2_title = P2Title(self, self.parent, f'Player Two\n{self.parent.p2.username}')
+        self.p1_frame = P1Frame(self, self.parent)
+        self.border = BorderFrame(self, self.parent)
+        self.p2_frame = P2Frame(self, self.parent)
+        self.parent.p1.dice1 = P1Dice1(self.p1_frame, self.parent)
+        self.parent.p1.dice2 = P1Dice2(self.p1_frame, self.parent)
+        self.parent.p1.calc_box = P1CalcBox(self.p1_frame, self.parent, 'Result:\nNothing')
+        self.parent.p2.dice1 = P2Dice1(self.p2_frame, self.parent)
+        self.parent.p2.dice2 = P2Dice2(self.p2_frame, self.parent)
+        self.parent.p2.calc_box = P2CalcBox(self.p2_frame, self.parent, 'Result:\nNothing')
+        self.parent.p1.roll_button = P1RollButton(self.p1_frame, self.parent, lambda: self.roll(self.parent.p1, self.parent.p2))
+        self.parent.p1.info = P1Info(self.p1_frame, self.parent)
+        self.parent.p2.roll_button = P2RollButton(self.p2_frame, self.parent, lambda: self.roll(self.parent.p2, self.parent.p1))
+        self.parent.p2.info = P2Info(self.p2_frame, self.parent)
+
+        self.parent.p2.roll_button['state'] = 'disabled'
+        self.parent.bind('<Key-Shift_L>', lambda event: self.roll(self.parent.p1, self.parent.p2))
+        self.parent.bind('<Key-Return>', lambda event: self.roll(self.parent.p2, self.parent.p1))
+
+
+    def roll(self, p, o_p):
+        if (self.game.round <= 6 or self.parent.p1.score == self.parent.p2.score) and self.game.turn == p:
+            p.reset()
+
+            p.roll_1 = random.randint(1, 6)
+            p.roll_2 = random.randint(1, 6)
+            p.score += p.roll_1 + p.roll_2
+
+            p.dice1.configure(image=self.parent.dice[p.roll_1 - 1])
+            p.dice2.configure(image=self.parent.dice[p.roll_2 - 1])
+
+            if (p.roll_1 + p.roll_2) % 2 == 0:
+                p.calc += 'Even number, have 10 points!'
+                p.score += 10
+
+            else:
+                p.calc += 'Odd number, lose ten points.'
+                p.score -= 5
+
+            if p.roll_1 == p.roll_2:
+                p.calc += '\nYou rolled a double, have a free roll!'
+                p.roll_again = True
+
+            if p.score < 0:
+                p.score = 0
+
+            p.calc_box.configure(text=p.calc)
+
+            self.score_title.configure(text=f'Round: {self.game.round}\n\nScore\n{self.parent.p1.score} : {self.parent.p2.score}')
+
+            if not p.roll_again:
+                p.roll_button['state'] = 'disabled'
+                o_p.roll_button['state'] = 'normal'
+                self.game.turn = o_p
 
 
 
 
 
-        self.player_two_roll_button['state'] = 'disabled'
-        self.parent.bind('<Key-Shift_L>', lambda event: self.roll(player_one))
-        self.parent.bind('<Key-Return>', lambda event: self.roll(player_two))
 
 
-    def roll(self):
-        pass
 
     def quit(self):
         pass
