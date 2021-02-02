@@ -139,12 +139,48 @@ def reveal_scores_table():
     conn.close()
 
 
-conn = sqlite3.connect('Data/saved_games.db')
-cursor = conn.cursor()
+def add_game(game_code, p1, p1_score, turn, p2, p2_score, round):
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
 
-cursor.execute("CREATE TABLE saved_games (game_code text, player_one text, player_one_score integer, turn integer, player_two text, player_two_score integer, round integer)")
+    c.execute("INSERT INTO scores VALUES (?, ?, ?, ?, ?, ?, ?)", (game_code, p1, p1_score, turn, p2, p2_score, round))
 
-# cursor.execute("INSERT INTO customers VALUES ('John', 'Elder', 'john@codemy.com')")
+    conn.commit()
+    conn.close()
 
-cursor.commit()
-cursor = conn.cursor()
+
+def does_game_code_exist(code):
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM games WHERE code = ?", (code,))
+    exists = False if c.fetchall() == [] else True
+
+    conn.commit()
+    conn.close()
+
+    return exists
+
+
+def reveal_games_table():
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT rowid, * FROM scores")
+    print('____HIGHSCORES TABLE____')
+    for i in c.fetchall():
+        print(i)
+
+    conn.commit()
+    conn.close()
+
+
+def clear_games_table():
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
+
+    c.execute("DELETE FROM users")
+
+    conn.commit()
+    conn.close()
+

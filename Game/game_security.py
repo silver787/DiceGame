@@ -28,3 +28,7 @@ def password_check(password, confirm_password):
 
     if password != confirm_password:
         return "Passwords do not match"
+
+
+def gen_game_code():
+    w

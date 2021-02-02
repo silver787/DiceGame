@@ -361,4 +361,9 @@ class DuoGame(tk.Frame):
             self.parent.switch(GameMenu)
 
     def save(self):
-        pass
+        self.save_message = messagebox.askokcancel(title='Confirm',
+                                                   message='Are you sure you want to quit?\n'
+                                                           'Game progress will not be saved.')
+        if self.save_message:
+            self.parent.switch(GameMenu)
+
