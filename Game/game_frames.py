@@ -50,7 +50,6 @@ class P1Create(tk.Frame):
         self.pack_propagate(0)
         self.parent = parent
         self.parent.title('Create Account')
-        self.alert_made = False
 
         self.back_button = BackButton(self, self.parent, P1Login)
         self.title = TitleLabel(self, self.parent, 'Create Account', 0, 30)
@@ -61,6 +60,7 @@ class P1Create(tk.Frame):
         self.confirm_password_label = TextLabel(self, self.parent, 'Confirm Password: ', 0, 10)
         self.confirm_password_entry = TextEntry(self, self.parent, '*', 0, 10)
         self.login_create_account = TextButton(self, self.parent, 'Confirm', lambda: self.create_account(), 0, 20)
+        self.alert = AlertLabel(self, self.parent, '', 0, 10)
         self.watermark = WatermarkLabel(self, self.parent)
 
     def create_account(self):
@@ -76,21 +76,11 @@ class P1Create(tk.Frame):
                 switch_user(self.parent, 'blue', 0.2)
                 self.parent.switch_frame(GameMenu)
 
-            elif not self.alert_made:
-                self.alert = AlertLabel(self, self.parent, 'Username already taken', 0, 10)
-                self.alert_made = True
+            else:
+                self.alert.configure(text='Username already taken')
 
-            elif self.alert_made:
-                self.alert.destroy()
-                self.alert = AlertLabel(self, self.parent, 'Username already taken', 0, 10)
-
-        elif not self.alert_made:
-            self.alert = AlertLabel(self, self.parent, pass_check_result, 0, 10)
-            self.alert_made = True
-
-        elif self.alert_made:
-            self.alert.destroy()
-            self.alert = AlertLabel(self, self.parent, pass_check_result, 0, 10)
+        else:
+            self.alert.configure(text=pass_check_result)
 
 
 class GameMenu(tk.Frame):
@@ -250,7 +240,6 @@ class P2Create(tk.Frame):
         self.pack_propagate(0)
         self.parent = parent
         self.parent.title('Player Two Create Account')
-        self.alert_made = False
 
         self.back_button = BackButton(self, self.parent, P1Login)
         self.title = TitleLabel(self, self.parent, 'Create Account', 0, 30)
@@ -262,6 +251,7 @@ class P2Create(tk.Frame):
         self.confirm_password_label = TextLabel(self, self.parent, 'Confirm Password: ', 0, 10)
         self.confirm_password_entry = TextEntry(self, self.parent, '*', 0, 10)
         self.login_create_account = TextButton(self, self.parent, 'Confirm', lambda: self.create_account(), 0, 20)
+        self.alert = AlertLabel(self, self.parent, '', 0, 10)
         self.watermark = WatermarkLabel(self, self.parent)
 
     def create_account(self):
@@ -276,21 +266,12 @@ class P2Create(tk.Frame):
                 database.add_user(username, password, 'blue', 0.2)
                 self.parent.switch_frame(DuoGame)
 
-            elif not self.alert_made:
-                self.alert = AlertLabel(self, self.parent, 'Username already taken', 0, 10)
-                self.alert_made = True
+            else:
+                self.alert.configure(text='Username already taken')
 
-            elif self.alert_made:
-                self.alert.destroy()
-                self.alert = AlertLabel(self, self.parent, 'Username already taken', 0, 10)
+        else:
+            self.alert.configure(text=pass_check_result)
 
-        elif not self.alert_made:
-            self.alert = AlertLabel(self, self.parent, pass_check_result, 0, 10)
-            self.alert_made = True
-
-        elif self.alert_made:
-            self.alert.destroy()
-            self.alert = AlertLabel(self, self.parent, pass_check_result, 0, 10)
 
 
 class DuoGame(tk.Frame):
@@ -319,15 +300,16 @@ class DuoGame(tk.Frame):
         self.parent.p2.dice1 = P2Dice1(self.p2_frame, self.parent)
         self.parent.p2.dice2 = P2Dice2(self.p2_frame, self.parent)
         self.parent.p2.calc_box = P2CalcBox(self.p2_frame, self.parent, 'Result:\nNothing')
-        self.parent.p1.roll_button = P1RollButton(self.p1_frame, self.parent, lambda: self.roll(self.parent.p1, self.parent.p2))
+        self.parent.p1.roll_button = P1RollButton(self.p1_frame, self.parent,
+                                                  lambda: self.roll(self.parent.p1, self.parent.p2))
         self.parent.p1.info = P1Info(self.p1_frame, self.parent)
-        self.parent.p2.roll_button = P2RollButton(self.p2_frame, self.parent, lambda: self.roll(self.parent.p2, self.parent.p1))
+        self.parent.p2.roll_button = P2RollButton(self.p2_frame, self.parent,
+                                                  lambda: self.roll(self.parent.p2, self.parent.p1))
         self.parent.p2.info = P2Info(self.p2_frame, self.parent)
 
         self.parent.p2.roll_button['state'] = 'disabled'
         self.parent.bind('<Key-Shift_L>', lambda event: self.roll(self.parent.p1, self.parent.p2))
         self.parent.bind('<Key-Return>', lambda event: self.roll(self.parent.p2, self.parent.p1))
-
 
     def roll(self, p, o_p):
         if (self.game.round <= 6 or self.parent.p1.score == self.parent.p2.score) and self.game.turn == p:
@@ -357,22 +339,26 @@ class DuoGame(tk.Frame):
 
             p.calc_box.configure(text=p.calc)
 
-            self.score_title.configure(text=f'Round: {self.game.round}\n\nScore\n{self.parent.p1.score} : {self.parent.p2.score}')
+            self.score_title.configure(
+                text=f'Round: {self.game.round}\n\nScore\n{self.parent.p1.score} : {self.parent.p2.score}')
 
             if not p.roll_again:
                 p.roll_button['state'] = 'disabled'
                 o_p.roll_button['state'] = 'normal'
                 self.game.turn = o_p
 
+                if p == self.parent.p2:
+                    self.game.round += 1
 
-
-
-
-
-
+        else:
+            self.parent.switch_frame(GameOver)
 
     def quit(self):
-        pass
+        self.quit_message = messagebox.askokcancel(title='Confirm',
+                                                   message='Are you sure you want to quit?\n'
+                                                           'Game progress will not be saved.')
+        if self.quit_message:
+            self.parent.switch(GameMenu)
 
     def save(self):
         pass
