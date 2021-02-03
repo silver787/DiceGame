@@ -22,6 +22,7 @@ ALL_DICE = [BLUE_DICE, GREEN_DICE, BLACK_DICE, WHITE_DICE]
 
 MUSIC_FILE = 'media/Music/bensound-thejazzpiano_2.mp3'
 RULES_FILE = 'media/rules.txt'
+GAME_INFO_FILE = 'media/onlinegame.txt'
 
 HIGH_SCORES_DB = 'data/high_scores.db'
 SAVED_GAMES_DB = 'data/saved_games.db'

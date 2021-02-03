@@ -29,11 +29,11 @@ class App(tk.Tk):
         self.frame = None
         self.switch_frame(P1Login)
 
-    def switch_frame(self, frame):
+    def switch_frame(self, frame, *args):
         if self.frame:
             self.frame.destroy()
 
-        self.frame = frame(self)
+        self.frame = frame(self, *args)
         self.frame.pack()
 
 

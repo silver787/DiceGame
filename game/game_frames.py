@@ -93,7 +93,7 @@ class GameMenu(tk.Frame):
         self.pack_propagate(0)
         self.parent = parent
         self.alert_made = False
-        self.parent.title(f'game Menu - {self.parent.p1.username}')
+        self.parent.title(f'Game Menu - {self.parent.p1.username}')
 
         self.title = TitleLabel(self, self.parent, 'Game Menu', 0, 60)
         self.duo_button = MenuButton(self, self.parent, 'Duo game',
@@ -365,7 +365,7 @@ class DuoGame(tk.Frame):
             self.parent.unbind("<Key-Return>")
             database.add_highscore(self.parent.p1.username, self.parent.p1.score)
             database.add_highscore(self.parent.p1.username, self.parent.p2.score)
-            self.parent.switch(GameMenu)
+            self.parent.switch_frame(GameMenu)
 
     def save(self):
         self.save_message = messagebox.askokcancel(title='Confirm',
@@ -401,9 +401,8 @@ class LoadGameInit(tk.Frame):
         self.back_button = BackButton(self, self.parent, GameMenu)
 
 
-
 class OnlineGameInit(tk.Frame):
-    def __int__(self, parent):
+    def __init__(self, parent):
         tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
                           bg=parent.colour[1])
         self.pack_propagate(0)
@@ -412,4 +411,97 @@ class OnlineGameInit(tk.Frame):
 
         self.back_button = BackButton(self, self.parent, GameMenu)
         self.title = TitleLabel(self, self.parent, 'Online Game', 0, 20)
+        with open(GAME_INFO_FILE, 'r') as f:
+            self.info_label = TextLabel(self, self.parent, f.read(), 0, 20  )
+        self.server_ip_label = TextLabel(self, self.parent, 'Server IP:\nE.g. 192.168.1.1', 0, 20)
+        self.server_ip_entry = TextEntry(self, self.parent, '', 0, 20)
+        self.confirm_button = TextButton(self, self.parent, 'confirm',
+                                         lambda: self.parent.switch_frame(OnlineGame), 0, 20)
+        self.watermark_label = WatermarkLabel(self, self.parent)
+
+
+
+class OnlineGame(tk.Frame):
+    def __init__(self, parent, server_ip):
+        tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
+                          bg=parent.colour[0])
+        self.pack_propagate(0)
+        self.parent = parent
+        self.server_ip = server_ip
+        self.parent.title(f'Duo game - {self.parent.p1.username} vs {self.parent.p2.username}')
+        self.game = Game()
+
+        self.quit_button = QuitButton(self, self.parent, self.quit, GameMenu)
+        self.title = GameTitle(self, self.parent, 'Duo game')
+        self.p1_title = P1Title(self, self.parent, f'Player One:\n{self.parent.p1.username}')
+        self.score_title = Score(self, self.parent,
+                                 f'Round: {self.game.round}\n\nScore:\n{self.parent.p1.score} : {self.parent.p2.score}')
+        self.p2_title = P2Title(self, self.parent, f'Player Two\n{self.parent.p2.username}')
+        self.p1_frame = P1Frame(self, self.parent)
+        self.border = BorderFrame(self, self.parent)
+        self.p2_frame = P2Frame(self, self.parent)
+        self.parent.p1.dice1 = P1Dice1(self.p1_frame, self.parent)
+        self.parent.p1.dice2 = P1Dice2(self.p1_frame, self.parent)
+        self.parent.p1.calc_box = P1CalcBox(self.p1_frame, self.parent, 'Result:\nNothing')
+        self.parent.p2.dice1 = P2Dice1(self.p2_frame, self.parent)
+        self.parent.p2.dice2 = P2Dice2(self.p2_frame, self.parent)
+        self.parent.p1.roll_button = P1RollButton(self.p1_frame, self.parent,
+                                                  lambda: self.roll(self.parent.p1, self.parent.p2))
+        self.parent.p1.info = P1Info(self.p1_frame, self.parent)
+
+        self.parent.bind('<Key-Shift_L>', lambda event: self.roll(self.parent.p1, self.parent.p2))
+
+    def roll(self, p, o_p):
+        if (self.game.round <= 6 or self.parent.p1.score == self.parent.p2.score):
+            if self.game.turn == p.num:
+                p.reset()
+
+                p.roll_1 = random.randint(1, 6)
+                p.roll_2 = random.randint(1, 6)
+                p.score += p.roll_1 + p.roll_2
+
+                p.dice1.configure(image=self.parent.dice[p.roll_1 - 1])
+                p.dice2.configure(image=self.parent.dice[p.roll_2 - 1])
+
+                if (p.roll_1 + p.roll_2) % 2 == 0:
+                    p.calc += 'Even number, have 10 points!'
+                    p.score += 10
+
+                else:
+                    p.calc += 'Odd number, lose ten points.'
+                    p.score -= 5
+
+                if p.roll_1 == p.roll_2:
+                    p.calc += '\nYou rolled a double, have a free roll!'
+                    p.roll_again = True
+
+                if p.score < 0:
+                    p.score = 0
+
+                p.calc_box.configure(text=p.calc)
+
+                self.score_title.configure(
+                    text=f'Round: {self.game.round}\n\nScore\n{self.parent.p1.score} : {self.parent.p2.score}')
+
+                if not p.roll_again:
+                    p.roll_button['state'] = 'disabled'
+                    o_p.roll_button['state'] = 'normal'
+                    self.game.turn = o_p.num
+
+                    if p == self.parent.p2:
+                        self.game.round += 1
+
+        else:
+            self.parent.switch_frame(GameOver)
+
+    def quit(self):
+        self.quit_message = messagebox.askokcancel(title='Confirm',
+                                                   message='Are you sure you want to quit?\n'
+                                                           'game progress will not be saved.')
+        if self.quit_message:
+            self.parent.unbind("<Key-Shift_L>")
+            self.parent.unbind("<Key-Return>")
+            database.add_highscore(self.parent.p1.username, self.parent.p1.score)
+            database.add_highscore(self.parent.p1.username, self.parent.p2.score)
+            self.parent.switch_frame(GameMenu)
 
