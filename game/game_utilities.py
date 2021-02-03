@@ -13,7 +13,6 @@ class Database:
     def __init__(self, security):
         self.security = security
 
-
     def add_user(self, username, password, theme, volume):
         password = self.security.hash(password)
 
@@ -112,7 +111,7 @@ class Database:
         conn.commit()
         conn.close()
 
-    def show_ten_highscores(self):
+    def ten_scores(self):
         conn = sqlite3.connect(HIGH_SCORES_DB)
         c = conn.cursor()
 
@@ -189,8 +188,6 @@ class Database:
         conn.close()
 
 
-
-
 class Security:
     def hash(self, password):
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -250,11 +247,12 @@ class Helper:
 
 
 class Player:
-    def __init__(self, username):
+    def __init__(self, username, num):
         self.username = username
         self.score = 0
         self.roll_1 = 0
         self.roll_2 = 0
+        self.num = num
         self.calc = ''
         self.roll_again = False
 
@@ -358,6 +356,15 @@ class ThemeCheckbox(tk.Checkbutton):
                                 fg=meta_parent.font_colour, command=lambda: parent.change_theme(text.lower(), self))
         self.deselect()
         self.pack(padx=padx, pady=pady)
+
+
+class SettingsOption(tk.Button):
+    def __init__(self, parent, meta_parent, text, command, padx, pady):
+        tk.Button.__init__(self, parent, text=text, bg=meta_parent.colour[1],
+                           highlightbackground=meta_parent.colour[1],
+                           command=command)
+
+        self.pack(anchor='se', padx=5, pady=2)
 
 
 class QuitButton(tk.Button):

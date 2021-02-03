@@ -36,7 +36,7 @@ class P1Login(tk.Frame):
         username, password = self.username_entry.get(), self.password_entry.get()
 
         if database.check_user(username, password):
-            self.parent.p1 = Player(username)
+            self.parent.p1 = Player(username, 1)
             colour, volume = database.get_user_details(self.parent.p1.username)[2:4]
             helper.switch_user(self.parent, colour, volume)
             self.parent.switch_frame(GameMenu)
@@ -74,7 +74,7 @@ class P1Create(tk.Frame):
 
         if pass_check_result is None:
             if not database.user_exists(username):
-                self.parent.p1 = Player(username)
+                self.parent.p1 = Player(username, 1)
                 database.add_user(username, password, 'blue', 0.2)
                 switch_user(self.parent, 'blue', 0.2)
                 self.parent.switch_frame(GameMenu)
@@ -99,15 +99,13 @@ class GameMenu(tk.Frame):
         self.duo_button = MenuButton(self, self.parent, 'Duo game',
                                      lambda: self.parent.switch_frame(P2Login), 25, 2, 0, 10)
         self.load_game_button = MenuButton(self, self.parent, 'Load game',
-                                           lambda: self.parent.switch_frame(Load), 25, 2, 0, 10)
+                                           lambda: self.parent.switch_frame(LoadGameInit), 25, 2, 0, 10)
         self.online_button = MenuButton(self, self.parent, 'Online game',
-                                        lambda: self.parent.switch_frame(OnlineGame), 25, 2, 0, 10)
+                                        lambda: self.parent.switch_frame(OnlineGameInit), 25, 2, 0, 10)
         self.rules_button = MenuButton(self, self.parent, 'Rules',
                                        lambda: self.parent.switch_frame(Rules), 25, 2, 0, 10)
         self.settings_button = MenuButton(self, self.parent, 'Settings',
                                           lambda: self.parent.switch_frame(Settings), 25, 2, 0, 10)
-        self.share_button = self.settings_button = MenuButton(self, self.parent, 'Share',
-                                                              lambda: self.parent.switch_frame(Share), 25, 2, 0, 10)
 
         self.watermark = WatermarkLabel(self, self.parent)
 
@@ -130,10 +128,12 @@ class Settings(tk.Frame):
         self.green_checkbox = ThemeCheckbox(self, self.parent, 'Green', 0, 10)
         self.black_checkbox = ThemeCheckbox(self, self.parent, 'Black', 0, 10)
         self.white_checkbox = ThemeCheckbox(self, self.parent, 'White', 0, 10)
-        self.log_out_button = tk.Button(self, text='Log Out', bg=self.parent.colour[1],
-                                        highlightbackground=self.parent.colour[1],
-                                        command=lambda: self.log_out())
-        self.log_out_button.pack(anchor='se', padx=5)
+        self.log_out_button = SettingsOption(self, self.parent, 'log out', self.log_out, 0, 0)
+        self.edit_details_button = SettingsOption(self,
+                                                  self.parent, 'edit details',
+                                                  lambda: self.parent.switch_frame(EditDetails), 0, 0)
+        self.feedback_button = SettingsOption(self, self.parent, 'feedback',
+                                              lambda: self.parent.switch_frame(FeedBack), 0, 0)
         self.watermark = WatermarkLabel(self, self.parent)
 
         self.volume_scale.set(pygame.mixer.music.get_volume() * 100)
@@ -213,14 +213,14 @@ class P2Login(tk.Frame):
         self.alert_made = False
 
         self.back_button = BackButton(self, self.parent, GameMenu)
-        self.title = TitleLabel(self, self.parent, 'Login', 0, 30)
+        self.title = TitleLabel(self, self.parent, 'Login', 0, 20)
         self.notice = TextLabel(self, self.parent, 'You will be automatically logged out once the game is over.', 0, 5)
         self.username_label = TextLabel(self, self.parent, 'Username: ', 0, 10)
         self.username_entry = TextEntry(self, self.parent, '', 0, 10)
         self.password_label = TextLabel(self, self.parent, 'Password: ', 0, 10)
         self.password_entry = TextEntry(self, self.parent, '*', 0, 10)
         self.login_button = TextButton(self, self.parent, 'Confirm', lambda: self.login(), 0, 20)
-        self.create_account_label = TextLabel(self, self.parent, "Don't have an account?\n\nCreate an account:", 0, 30)
+        self.create_account_label = TextLabel(self, self.parent, "Don't have an account?\n\nCreate an account:", 0, 20)
         self.create_account_button = TextButton(self, self.parent, 'Confirm',
                                                 lambda: self.parent.switch_frame(P2Create), 0, 10)
         self.watermark = WatermarkLabel(self, self.parent)
@@ -229,7 +229,7 @@ class P2Login(tk.Frame):
         username, password = self.username_entry.get(), self.password_entry.get()
 
         if database.check_user(username, password):
-            self.parent.p2 = Player(username)
+            self.parent.p2 = Player(username, 2)
             self.parent.switch_frame(DuoGame)
 
         elif not self.alert_made:
@@ -245,7 +245,7 @@ class P2Create(tk.Frame):
         self.parent = parent
         self.parent.title('Player Two Create Account')
 
-        self.back_button = BackButton(self, self.parent, P1Login)
+        self.back_button = BackButton(self, self.parent, P2Login)
         self.title = TitleLabel(self, self.parent, 'Create Account', 0, 30)
         self.notice = TextLabel(self, self.parent, 'You will be automatically logged out once the game is over.', 0, 5)
         self.username_label = TextLabel(self, self.parent, 'Username: ', 0, 10)
@@ -314,43 +314,44 @@ class DuoGame(tk.Frame):
         self.parent.bind('<Key-Return>', lambda event: self.roll(self.parent.p2, self.parent.p1))
 
     def roll(self, p, o_p):
-        if (self.game.round <= 6 or self.parent.p1.score == self.parent.p2.score) and self.game.turn == p:
-            p.reset()
+        if (self.game.round <= 6 or self.parent.p1.score == self.parent.p2.score):
+            if self.game.turn == p.num:
+                p.reset()
 
-            p.roll_1 = random.randint(1, 6)
-            p.roll_2 = random.randint(1, 6)
-            p.score += p.roll_1 + p.roll_2
+                p.roll_1 = random.randint(1, 6)
+                p.roll_2 = random.randint(1, 6)
+                p.score += p.roll_1 + p.roll_2
 
-            p.dice1.configure(image=self.parent.dice[p.roll_1 - 1])
-            p.dice2.configure(image=self.parent.dice[p.roll_2 - 1])
+                p.dice1.configure(image=self.parent.dice[p.roll_1 - 1])
+                p.dice2.configure(image=self.parent.dice[p.roll_2 - 1])
 
-            if (p.roll_1 + p.roll_2) % 2 == 0:
-                p.calc += 'Even number, have 10 points!'
-                p.score += 10
+                if (p.roll_1 + p.roll_2) % 2 == 0:
+                    p.calc += 'Even number, have 10 points!'
+                    p.score += 10
 
-            else:
-                p.calc += 'Odd number, lose ten points.'
-                p.score -= 5
+                else:
+                    p.calc += 'Odd number, lose ten points.'
+                    p.score -= 5
 
-            if p.roll_1 == p.roll_2:
-                p.calc += '\nYou rolled a double, have a free roll!'
-                p.roll_again = True
+                if p.roll_1 == p.roll_2:
+                    p.calc += '\nYou rolled a double, have a free roll!'
+                    p.roll_again = True
 
-            if p.score < 0:
-                p.score = 0
+                if p.score < 0:
+                    p.score = 0
 
-            p.calc_box.configure(text=p.calc)
+                p.calc_box.configure(text=p.calc)
 
-            self.score_title.configure(
-                text=f'Round: {self.game.round}\n\nScore\n{self.parent.p1.score} : {self.parent.p2.score}')
+                self.score_title.configure(
+                    text=f'Round: {self.game.round}\n\nScore\n{self.parent.p1.score} : {self.parent.p2.score}')
 
-            if not p.roll_again:
-                p.roll_button['state'] = 'disabled'
-                o_p.roll_button['state'] = 'normal'
-                self.game.turn = o_p
+                if not p.roll_again:
+                    p.roll_button['state'] = 'disabled'
+                    o_p.roll_button['state'] = 'normal'
+                    self.game.turn = o_p.num
 
-                if p == self.parent.p2:
-                    self.game.round += 1
+                    if p == self.parent.p2:
+                        self.game.round += 1
 
         else:
             self.parent.switch_frame(GameOver)
@@ -360,6 +361,10 @@ class DuoGame(tk.Frame):
                                                    message='Are you sure you want to quit?\n'
                                                            'game progress will not be saved.')
         if self.quit_message:
+            self.parent.unbind("<Key-Shift_L>")
+            self.parent.unbind("<Key-Return>")
+            database.add_highscore(self.parent.p1.username, self.parent.p1.score)
+            database.add_highscore(self.parent.p1.username, self.parent.p2.score)
             self.parent.switch(GameMenu)
 
     def save(self):
@@ -370,4 +375,41 @@ class DuoGame(tk.Frame):
                               self.parent.p2.score, self.game.round, self.game.p)
             self.parent.switch(GameMenu)
 
+
+class GameOver(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
+                          bg=parent.colour[1])
+        self.pack_propagate(0)
+        self.parent = parent
+        self.parent.title(f'Game Over - {self.parent.p1.username}')
+
+        winner = self.parent.p1.username if self.parent.p1.score > self.parent.p2.score else self.parent.p2.username
+
+        self.back_button = BackButton(self, self.parent, GameMenu)
+        self.result = TextLabel(self, self.parent, f'Congratulations {winner}, you win!', 0, 20)
+        self.scores = TextLabel(self, self.parent, f"Highscores:\n\n" + '\n'.join(database.ten_scores()), 0, 20)
+
+
+class LoadGameInit(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
+                          bg=parent.colour[1])
+        self.pack_propagate(0)
+        self.parent = parent
+        self.parent.title(f'Load Game - {self.parent.p1.username}')
+        self.back_button = BackButton(self, self.parent, GameMenu)
+
+
+
+class OnlineGameInit(tk.Frame):
+    def __int__(self, parent):
+        tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
+                          bg=parent.colour[1])
+        self.pack_propagate(0)
+        self.parent = parent
+        self.parent.title(f'Online Game - {self.parent.p1.username}')
+
+        self.back_button = BackButton(self, self.parent, GameMenu)
+        self.title = TitleLabel(self, self.parent, 'Online Game', 0, 20)
 
