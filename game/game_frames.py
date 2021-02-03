@@ -1,5 +1,4 @@
 from game.game_utilities import *
-from game.game_constants import *
 import tkinter as tk
 from tkinter import messagebox
 import pygame

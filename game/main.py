@@ -1,9 +1,5 @@
-from game.game_constants import *
-from game.game_utilitiespy import *
 from game.game_frames import *
 import itertools
-import pygame
-import tkinter as tk
 from PIL import ImageTk, Image
 
 
