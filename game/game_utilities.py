@@ -1,252 +1,197 @@
 from game.game_constants import *
-import tkinter as tk
+import bcrypt
 import pygame
 import random
-import string
 import random
-import bcrypt
 import re
 import sqlite3
+import string
+import tkinter as tk
 
 
 class Database:
-    # generic working password: Howard64!!@
-    pass
+    def __init__(self, security):
+        self.security = security
 
 
-def add_user(username, password, theme, volume):
-    password = security.hash(password)
+    def add_user(self, username, password, theme, volume):
+        password = self.security.hash(password)
 
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
-    c.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (username, password, theme, volume))
+        c.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (username, password, theme, volume))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
+    def check_user(self, username, password):
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
-def check_user(username, password):
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE username = ?", (username,))
+        try:
+            valid = True if self.security.check_hash(password, c.fetchone()[1]) else False
+        except Exception as e:
+            valid = False
 
-    c.execute("SELECT * FROM users WHERE username = ?", (username,))
-    try:
-        valid = True if security.check_hash(password, c.fetchone()[1]) else False
-    except:
-        valid = False
+        conn.commit()
+        conn.close()
 
-    conn.commit()
-    conn.close()
+        return valid
 
-    return valid
+    def update_user_volume(self, user, update_to):
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
+        c.execute("UPDATE users SET volume = ? WHERE username = ?", (update_to, user))
 
-def update_user_volume(user, update_to):
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+        conn.commit()
+        conn.close()
 
-    c.execute("UPDATE users SET volume = ? WHERE username = ?", (update_to, user))
+    def update_user_theme(self, user, update_to):
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        c.execute("UPDATE users SET theme = ? WHERE username = ?", (update_to, user))
 
+        conn.commit()
+        conn.close()
 
-def update_user_theme(user, update_to):
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+    def user_exists(self, username):
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
-    c.execute("UPDATE users SET theme = ? WHERE username = ?", (update_to, user))
+        c.execute("SELECT * FROM users WHERE username = ?", (username,))
+        exists = False if c.fetchall() == [] else True
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
+        return exists
 
-def user_exists(username):
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+    def get_user_details(self, username):
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
-    c.execute("SELECT * FROM users WHERE username = ?", (username,))
-    exists = False if c.fetchall() == [] else True
+        c.execute("SELECT * FROM users WHERE username = ?", (username,))
+        details = c.fetchone()
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return exists
+        return details
 
+    def reveal_users_table(self):
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
-def get_user_details(username):
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+        c.execute("SELECT rowid, * FROM users")
+        print('____USERS TABLE____')
+        for i in c.fetchall():
+            print(i)
 
-    c.execute("SELECT * FROM users WHERE username = ?", (username,))
-    details = c.fetchone()
+        conn.commit()
+        conn.close()
 
-    conn.commit()
-    conn.close()
+    def clear_users_table(self):
+        conn = sqlite3.connect(USER_INFO_DB)
+        c = conn.cursor()
 
-    return details
+        c.execute("DELETE FROM users")
 
+        conn.commit()
+        conn.close()
 
-def reveal_users_table():
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+    def add_highscore(self, username, highscore):
+        conn = sqlite3.connect(HIGH_SCORES_DB)
+        c = conn.cursor()
 
-    c.execute("SELECT rowid, * FROM users")
-    print('____USERS TABLE____')
-    for i in c.fetchall():
-        print(i)
+        c.execute("INSERT INTO scores VALUES (?, ?)", (username, highscore))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
+    def show_ten_highscores(self):
+        conn = sqlite3.connect(HIGH_SCORES_DB)
+        c = conn.cursor()
 
-def clear_users_table():
-    conn = sqlite3.connect(USER_INFO_DB)
-    c = conn.cursor()
+        c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
+        highscores = c.fetchall()
+        highscores = [f'{i[0]}: {i[1]}' for i in highscores]
 
-    c.execute("DELETE FROM users")
+        conn.commit()
+        conn.close()
+        return highscores
 
-    conn.commit()
-    conn.close()
+    def reveal_scores_table(self):
+        conn = sqlite3.connect(HIGH_SCORES_DB)
+        c = conn.cursor()
 
+        c.execute("SELECT rowid, * FROM scores")
+        print('____HIGHSCORES TABLE____')
+        for i in c.fetchall():
+            print(i)
 
-def add_highscore(username, highscore):
-    conn = sqlite3.connect(HIGH_SCORES_DB)
-    c = conn.cursor()
+        conn.commit()
+        conn.close()
 
-    c.execute("INSERT INTO scores VALUES (?, ?)", (username, highscore))
+    def add_game(self, game_code, p1, p1_score, p2, p2_score, round, turn):
+        conn = sqlite3.connect(SAVED_GAMES_DB)
+        c = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        c.execute("INSERT INTO games VALUES (?, ?, ?, ?, ?, ?, ?)",
+                  (game_code, p1, p1_score, p2, p2_score, round, turn))
 
+        conn.commit()
+        conn.close()
 
-def show_ten_highscores():
-    conn = sqlite3.connect(HIGH_SCORES_DB)
-    c = conn.cursor()
+    def code_exists(self, code):
+        conn = sqlite3.connect(SAVED_GAMES_DB)
+        c = conn.cursor()
 
-    c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
-    highscores = c.fetchall()
-    highscores = [f'{i[0]}: {i[1]}' for i in highscores]
+        c.execute("SELECT * FROM games WHERE code = ?", (code,))
+        exists = False if c.fetchall() == [] else True
 
-    conn.commit()
-    conn.close()
-    return highscores
+        conn.commit()
+        conn.close()
 
+        return exists
 
-def reveal_scores_table():
-    conn = sqlite3.connect(HIGH_SCORES_DB)
-    c = conn.cursor()
+    def reveal_games_table(self):
+        conn = sqlite3.connect(SAVED_GAMES_DB)
+        c = conn.cursor()
 
-    c.execute("SELECT rowid, * FROM scores")
-    print('____HIGHSCORES TABLE____')
-    for i in c.fetchall():
-        print(i)
+        c.execute("SELECT rowid, * FROM games")
+        print('____GAMES TABLE____')
+        for i in c.fetchall():
+            print(i)
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
+    def gen_code(self):
+        while True:
+            chars = string.ascii_uppercase + string.digits
+            code = ''.join(random.choice(chars) for _ in range(3))
+            if self.code_exists(code):
+                continue
 
-def add_game(game_code, p1, p1_score, p2, p2_score, round, turn):
-    conn = sqlite3.connect(SAVED_GAMES_DB)
-    c = conn.cursor()
+            return code
 
-    c.execute("INSERT INTO games VALUES (?, ?, ?, ?, ?, ?, ?)", (game_code, p1, p1_score, p2, p2_score, round, turn))
+    def clear_games_table(self):
+        conn = sqlite3.connect(SAVED_GAMES_DB)
+        c = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        c.execute("DELETE FROM games")
 
+        conn.commit()
+        conn.close()
 
-def code_exists(code):
-    conn = sqlite3.connect(SAVED_GAMES_DB)
-    c = conn.cursor()
 
-    c.execute("SELECT * FROM games WHERE code = ?", (code,))
-    exists = False if c.fetchall() == [] else True
-
-    conn.commit()
-    conn.close()
-
-    return exists
-
-
-def reveal_games_table():
-    conn = sqlite3.connect(SAVED_GAMES_DB)
-    c = conn.cursor()
-
-    c.execute("SELECT rowid, * FROM games")
-    print('____GAMES TABLE____')
-    for i in c.fetchall():
-        print(i)
-
-    conn.commit()
-    conn.close()
-
-
-def gen_code():
-    while True:
-        chars = string.ascii_uppercase + string.digits
-        code = ''.join(random.choice(chars) for _ in range(3))
-        if code_exists(code):
-            continue
-
-        return code
-
-
-def clear_games_table():
-    conn = sqlite3.connect(SAVED_GAMES_DB)
-    c = conn.cursor()
-
-    c.execute("DELETE FROM games")
-
-    conn.commit()
-    conn.close()
-
-
-class P1Login(tk.Frame):
-    def __init__(self, parent):
-        tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
-                          bg=parent.colour[1])
-        self.pack_propagate(0)
-        self.parent = parent
-        self.parent.title('Login')
-        self.alert_made = False
-
-        self.parent.colour = BLUE
-        self.parent.font_colour = 'white'
-        self.parent.dice = BLUE_DICE
-        self.parent.configure(bg=self.parent.colour[0])
-        pygame.mixer.music.set_volume(0.2)
-
-        self.title = TitleLabel(self, self.parent, 'Login', 0, 30)
-        self.username_label = TextLabel(self, self.parent, 'Username: ', 0, 10)
-        self.username_entry = TextEntry(self, self.parent, '', 0, 10)
-        self.password_label = TextLabel(self, self.parent, 'Password: ', 0, 10)
-        self.password_entry = TextEntry(self, self.parent, '*', 0, 10)
-        self.login_button = TextButton(self, self.parent, 'Confirm', lambda: self.login(), 0, 20)
-        self.create_account_label = TextLabel(self, self.parent, "Don't have an account?\n\nCreate an account:", 0, 30)
-        self.create_account_button = TextButton(self, self.parent, 'Confirm',
-                                                lambda: self.parent.switch_frame(P1Create), 0, 10)
-        self.watermark = WatermarkLabel(self, self.parent)
-
-    def login(self):
-        username, password = self.username_entry.get(), self.password_entry.get()
-
-        if database.check_user(username, password):
-            self.parent.p1 = Player(username)
-            colour, volume = database.get_user_details(self.parent.p1.username)[2:4]
-            switch_user(self.parent, colour, volume)
-            self.parent.switch_frame(GameMenu)
-
-        elif not self.alert_made:
-            self.alert = AlertLabel(self, self.parent, 'Invalid credentials', 0, 10)
-            self.alert_made = True
 
 
 class Security:
-    def __init__(self):
-        pass
-
     def hash(self, password):
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
@@ -319,10 +264,11 @@ class Player:
         self.calc = ''
         self.roll_again = False
 
-    class Game:
-        def __init__(self):
-            self.round = 0
-            self.turn = 1
+
+class Game:
+    def __init__(self):
+        self.round = 0
+        self.turn = 1
 
 
 class TitleLabel(tk.Label):

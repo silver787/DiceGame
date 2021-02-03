@@ -1,6 +1,50 @@
 from game.game_utilities import *
 from tkinter import messagebox
 
+security = Security()
+database = Database(security)
+helper = Helper()
+
+
+class P1Login(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
+                          bg=parent.colour[1])
+        self.pack_propagate(0)
+        self.parent = parent
+        self.parent.title('Login')
+        self.alert_made = False
+
+        self.parent.colour = BLUE
+        self.parent.font_colour = 'white'
+        self.parent.dice = BLUE_DICE
+        self.parent.configure(bg=self.parent.colour[0])
+        pygame.mixer.music.set_volume(0.2)
+
+        self.title = TitleLabel(self, self.parent, 'Login', 0, 30)
+        self.username_label = TextLabel(self, self.parent, 'Username: ', 0, 10)
+        self.username_entry = TextEntry(self, self.parent, '', 0, 10)
+        self.password_label = TextLabel(self, self.parent, 'Password: ', 0, 10)
+        self.password_entry = TextEntry(self, self.parent, '*', 0, 10)
+        self.login_button = TextButton(self, self.parent, 'Confirm', lambda: self.login(), 0, 20)
+        self.create_account_label = TextLabel(self, self.parent, "Don't have an account?\n\nCreate an account:", 0, 30)
+        self.create_account_button = TextButton(self, self.parent, 'Confirm',
+                                                lambda: self.parent.switch_frame(P1Create), 0, 10)
+        self.watermark = WatermarkLabel(self, self.parent)
+
+    def login(self):
+        username, password = self.username_entry.get(), self.password_entry.get()
+
+        if database.check_user(username, password):
+            self.parent.p1 = Player(username)
+            colour, volume = database.get_user_details(self.parent.p1.username)[2:4]
+            helper.switch_user(self.parent, colour, volume)
+            self.parent.switch_frame(GameMenu)
+
+        elif not self.alert_made:
+            self.alert = AlertLabel(self, self.parent, 'Invalid credentials', 0, 10)
+            self.alert_made = True
+
 
 class P1Create(tk.Frame):
     def __init__(self, parent):
@@ -51,19 +95,19 @@ class GameMenu(tk.Frame):
         self.alert_made = False
         self.parent.title(f'game Menu - {self.parent.p1.username}')
 
-        self.title = TitleLabel(self, self.parent, 'game Menu', 0, 60)
+        self.title = TitleLabel(self, self.parent, 'Game Menu', 0, 60)
         self.duo_button = MenuButton(self, self.parent, 'Duo game',
-                                     lambda: self.parent.switch_frame(P2Login), 25, 2, 0, 20)
+                                     lambda: self.parent.switch_frame(P2Login), 25, 2, 0, 10)
         self.load_game_button = MenuButton(self, self.parent, 'Load game',
-                                           lambda: self.parent.switch_frame(Load), 25, 2, 0, 20)
+                                           lambda: self.parent.switch_frame(Load), 25, 2, 0, 10)
         self.online_button = MenuButton(self, self.parent, 'Online game',
-                                        lambda: self.parent.switch_frame(OnlineGame), 25, 2, 0, 20)
+                                        lambda: self.parent.switch_frame(OnlineGame), 25, 2, 0, 10)
         self.rules_button = MenuButton(self, self.parent, 'Rules',
-                                       lambda: self.parent.switch_frame(Rules), 25, 2, 0, 20)
+                                       lambda: self.parent.switch_frame(Rules), 25, 2, 0, 10)
         self.settings_button = MenuButton(self, self.parent, 'Settings',
-                                          lambda: self.parent.switch_frame(Settings), 25, 2, 0, 20)
+                                          lambda: self.parent.switch_frame(Settings), 25, 2, 0, 10)
         self.share_button = self.settings_button = MenuButton(self, self.parent, 'Share',
-                                                              lambda: self.parent.switch_frame(Share), 25, 2, 0, 20)
+                                                              lambda: self.parent.switch_frame(Share), 25, 2, 0, 10)
 
         self.watermark = WatermarkLabel(self, self.parent)
 
