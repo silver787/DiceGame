@@ -212,6 +212,7 @@ class P2Login(tk.Frame):
         self.parent.title('Player Two Login')
         self.alert_made = False
 
+        self.back_button = BackButton(self, self.parent, GameMenu)
         self.title = TitleLabel(self, self.parent, 'Login', 0, 30)
         self.notice = TextLabel(self, self.parent, 'You will be automatically logged out once the game is over.', 0, 5)
         self.username_label = TextLabel(self, self.parent, 'Username: ', 0, 10)
@@ -363,9 +364,10 @@ class DuoGame(tk.Frame):
 
     def save(self):
         self.save_message = messagebox.askokcancel(title='Confirm',
-                                                   message='Are you sure you want to quit?\n'
-                                                           'game progress will not be saved.')
+                                                   message='Are you sure you want to save game?.')
         if self.save_message:
             database.add_game(database.gen_code(), self.parent.p1, self.parent.p1.score, self.parent.p2,
                               self.parent.p2.score, self.game.round, self.game.p)
             self.parent.switch(GameMenu)
+
+
