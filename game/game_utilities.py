@@ -1,5 +1,72 @@
-from Game.game_constants import *
+from game.game_constants import *
 import tkinter as tk
+import pygame
+import random
+import string
+import random
+import bcrypt
+import re
+
+
+class Security
+def hash(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+
+def check_hash(password, hash):
+    return True if bcrypt.checkpw(password.encode('utf-8'), hash) else False
+
+
+def password_check(password, confirm_password):
+    if len(password) < 8:
+        return "Password too short"
+
+    if re.search(r"\d", password) is None:
+        return "Password does not contain numbers"
+
+    if re.search(r"[A-Z]", password) is None:
+        return "Password has no upppercase characters"
+
+    if re.search(r"[a-z]", password) is None:
+        return "Password does not contain lowercase characters"
+
+    if re.search(r"\W", password) is None:
+        return "Password does not contain any symbols"
+
+    if password != confirm_password:
+        return "Passwords do not match"
+
+
+
+class
+def switch_user(parent, colour, volume):
+    if colour == 'blue':
+        parent.colour = BLUE
+        parent.font_colour = 'white'
+        parent.dice = BLUE_DICE
+        parent.configure(bg=parent.colour[0])
+        pygame.mixer.music.set_volume(volume)
+
+    elif colour == 'green':
+        parent.colour = GREEN
+        parent.font_colour = 'white'
+        parent.dice = GREEN_DICE
+        parent.configure(bg=parent.colour[0])
+        pygame.mixer.music.set_volume(volume)
+
+    elif colour == 'black':
+        parent.colour = BLACK
+        parent.font_colour = 'white'
+        parent.dice = BLACK_DICE
+        parent.configure(bg=parent.colour[0])
+        pygame.mixer.music.set_volume(volume)
+
+    elif colour == 'white':
+        parent.colour = WHITE
+        parent.font_colour = 'white'
+        parent.dice = WHITE_DICE
+        parent.configure(bg=parent.colour[0])
+        pygame.mixer.music.set_volume(volume)
 
 
 class Player:
@@ -21,7 +88,7 @@ class Player:
 class Game:
     def __init__(self):
         self.round = 0
-        self.turn = None
+        self.turn = 1
 
 
 class TitleLabel(tk.Label):

@@ -1,13 +1,202 @@
-from Game.game_classes import *
-from Game.game_constants import *
-from Game.game_functions import *
-import Game.game_security as security
-import Game.game_database as database
-import random
+from game.game_utilities import *
+from game.game_constants import *
 import tkinter as tk
 from tkinter import messagebox
 import pygame
+import sqlite3
+import string
 
+
+# generic working password: Howard64!!@
+
+
+def add_user(username, password, theme, volume):
+    password = security.hash(password)
+
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (username, password, theme, volume))
+
+    conn.commit()
+    conn.close()
+
+
+def check_user(username, password):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM users WHERE username = ?", (username,))
+    try:
+        valid = True if security.check_hash(password, c.fetchone()[1]) else False
+    except:
+        valid = False
+
+    conn.commit()
+    conn.close()
+
+    return valid
+
+
+def update_user_volume(user, update_to):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("UPDATE users SET volume = ? WHERE username = ?", (update_to, user))
+
+    conn.commit()
+    conn.close()
+
+
+def update_user_theme(user, update_to):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("UPDATE users SET theme = ? WHERE username = ?", (update_to, user))
+
+    conn.commit()
+    conn.close()
+
+
+def user_exists(username):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM users WHERE username = ?", (username,))
+    exists = False if c.fetchall() == [] else True
+
+    conn.commit()
+    conn.close()
+
+    return exists
+
+
+def get_user_details(username):
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM users WHERE username = ?", (username,))
+    details = c.fetchone()
+
+    conn.commit()
+    conn.close()
+
+    return details
+
+
+def reveal_users_table():
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT rowid, * FROM users")
+    print('____USERS TABLE____')
+    for i in c.fetchall():
+        print(i)
+
+    conn.commit()
+    conn.close()
+
+
+def clear_users_table():
+    conn = sqlite3.connect(USER_INFO_DB)
+    c = conn.cursor()
+
+    c.execute("DELETE FROM users")
+
+    conn.commit()
+    conn.close()
+
+
+def add_highscore(username, highscore):
+    conn = sqlite3.connect(HIGH_SCORES_DB)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO scores VALUES (?, ?)", (username, highscore))
+
+    conn.commit()
+    conn.close()
+
+
+def show_ten_highscores():
+    conn = sqlite3.connect(HIGH_SCORES_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
+    highscores = c.fetchall()
+    highscores = [f'{i[0]}: {i[1]}' for i in highscores]
+
+    conn.commit()
+    conn.close()
+    return highscores
+
+
+def reveal_scores_table():
+    conn = sqlite3.connect(HIGH_SCORES_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT rowid, * FROM scores")
+    print('____HIGHSCORES TABLE____')
+    for i in c.fetchall():
+        print(i)
+
+    conn.commit()
+    conn.close()
+
+
+def add_game(game_code, p1, p1_score, p2, p2_score, round, turn):
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO games VALUES (?, ?, ?, ?, ?, ?, ?)", (game_code, p1, p1_score, p2, p2_score, round, turn))
+
+    conn.commit()
+    conn.close()
+
+
+def code_exists(code):
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM games WHERE code = ?", (code,))
+    exists = False if c.fetchall() == [] else True
+
+    conn.commit()
+    conn.close()
+
+    return exists
+
+
+def reveal_games_table():
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
+
+    c.execute("SELECT rowid, * FROM games")
+    print('____GAMES TABLE____')
+    for i in c.fetchall():
+        print(i)
+
+    conn.commit()
+    conn.close()
+
+
+def gen_code():
+    while True:
+        chars = string.ascii_uppercase + string.digits
+        code = ''.join(random.choice(chars) for _ in range(3))
+        if code_exists(code):
+            continue
+
+        return code
+
+
+def clear_games_table():
+    conn = sqlite3.connect(SAVED_GAMES_DB)
+    c = conn.cursor()
+
+    c.execute("DELETE FROM games")
+
+    conn.commit()
+    conn.close()
 
 class P1Login(tk.Frame):
     def __init__(self, parent):
@@ -17,6 +206,12 @@ class P1Login(tk.Frame):
         self.parent = parent
         self.parent.title('Login')
         self.alert_made = False
+
+        self.parent.colour = BLUE
+        self.parent.font_colour = 'white'
+        self.parent.dice = BLUE_DICE
+        self.parent.configure(bg=self.parent.colour[0])
+        pygame.mixer.music.set_volume(0.2)
 
         self.title = TitleLabel(self, self.parent, 'Login', 0, 30)
         self.username_label = TextLabel(self, self.parent, 'Username: ', 0, 10)
@@ -90,17 +285,22 @@ class GameMenu(tk.Frame):
         self.pack_propagate(0)
         self.parent = parent
         self.alert_made = False
-        self.parent.title(f'Game Menu - {self.parent.p1.username}')
+        self.parent.title(f'game Menu - {self.parent.p1.username}')
 
-        self.title = TitleLabel(self, self.parent, 'Game Menu', 0, 60)
-        self.duo_button = MenuButton(self, self.parent, 'Duo Game',
+        self.title = TitleLabel(self, self.parent, 'game Menu', 0, 60)
+        self.duo_button = MenuButton(self, self.parent, 'Duo game',
                                      lambda: self.parent.switch_frame(P2Login), 25, 2, 0, 20)
-        self.online_button = MenuButton(self, self.parent, 'Online Game',
+        self.load_game_button = MenuButton(self, self.parent, 'Load game',
+                                           lambda: self.parent.switch_frame(Load), 25, 2, 0, 20)
+        self.online_button = MenuButton(self, self.parent, 'Online game',
                                         lambda: self.parent.switch_frame(OnlineGame), 25, 2, 0, 20)
         self.rules_button = MenuButton(self, self.parent, 'Rules',
                                        lambda: self.parent.switch_frame(Rules), 25, 2, 0, 20)
         self.settings_button = MenuButton(self, self.parent, 'Settings',
                                           lambda: self.parent.switch_frame(Settings), 25, 2, 0, 20)
+        self.share_button = self.settings_button = MenuButton(self, self.parent, 'Share',
+                                                              lambda: self.parent.switch_frame(Share), 25, 2, 0, 20)
+
         self.watermark = WatermarkLabel(self, self.parent)
 
 
@@ -178,11 +378,6 @@ class Settings(tk.Frame):
 
         if self.log_out_message:
             del self.parent.p1
-            self.parent.colour = BLUE
-            self.parent.font_colour = 'white'
-            self.parent.dice = BLUE_DICE
-            self.parent.configure(bg=self.parent.colour[0])
-            pygame.mixer.music.set_volume(0.2)
             self.parent.switch_frame(P1Login)
 
 
@@ -224,7 +419,7 @@ class P2Login(tk.Frame):
     def login(self):
         username, password = self.username_entry.get(), self.password_entry.get()
 
-        if user_info_db.check_user(username, password):
+        if database.check_user(username, password):
             self.parent.p2 = Player(username)
             self.parent.switch_frame(DuoGame)
 
@@ -273,20 +468,18 @@ class P2Create(tk.Frame):
             self.alert.configure(text=pass_check_result)
 
 
-
 class DuoGame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
                           bg=parent.colour[0])
         self.pack_propagate(0)
         self.parent = parent
-        self.parent.title(f'Duo Game - {self.parent.p1.username} vs {self.parent.p2.username}')
+        self.parent.title(f'Duo game - {self.parent.p1.username} vs {self.parent.p2.username}')
         self.game = Game()
-        self.game.turn = self.parent.p1
 
         self.quit_button = QuitButton(self, self.parent, self.quit, GameMenu)
         self.save_button = SaveButton(self, self.parent, self.save, GameMenu)
-        self.title = GameTitle(self, self.parent, 'Duo Game')
+        self.title = GameTitle(self, self.parent, 'Duo game')
         self.p1_title = P1Title(self, self.parent, f'Player One:\n{self.parent.p1.username}')
         self.score_title = Score(self, self.parent,
                                  f'Round: {self.game.round}\n\nScore:\n{self.parent.p1.score} : {self.parent.p2.score}')
@@ -356,14 +549,15 @@ class DuoGame(tk.Frame):
     def quit(self):
         self.quit_message = messagebox.askokcancel(title='Confirm',
                                                    message='Are you sure you want to quit?\n'
-                                                           'Game progress will not be saved.')
+                                                           'game progress will not be saved.')
         if self.quit_message:
             self.parent.switch(GameMenu)
 
     def save(self):
         self.save_message = messagebox.askokcancel(title='Confirm',
                                                    message='Are you sure you want to quit?\n'
-                                                           'Game progress will not be saved.')
+                                                           'game progress will not be saved.')
         if self.save_message:
+            database.add_game(database.gen_code(), self.parent.p1, self.parent.p1.score, self.parent.p2,
+                              self.parent.p2.score, self.game.round, self.game.p)
             self.parent.switch(GameMenu)
-
