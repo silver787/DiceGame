@@ -1,0 +1,3 @@
+Hi, please enter your game code, and click 'Confirm' to play!
+
+Note: Other players in the game will have to login before playing.

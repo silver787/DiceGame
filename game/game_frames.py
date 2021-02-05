@@ -99,7 +99,7 @@ class GameMenu(tk.Frame):
         self.duo_button = MenuButton(self, self.parent, 'Duo game',
                                      lambda: self.parent.switch_frame(P2Login), 25, 2, 0, 10)
         self.load_game_button = MenuButton(self, self.parent, 'Load game',
-                                           lambda: self.parent.switch_frame(LoadGameInit), 25, 2, 0, 10)
+                                           lambda: self.parent.switch_frame(LoadGame), 25, 2, 0, 10)
         self.online_button = MenuButton(self, self.parent, 'Online game',
                                         lambda: self.parent.switch_frame(OnlineGameInit), 25, 2, 0, 10)
         self.rules_button = MenuButton(self, self.parent, 'Rules',
@@ -391,14 +391,28 @@ class GameOver(tk.Frame):
         self.scores = TextLabel(self, self.parent, f"Highscores:\n\n" + '\n'.join(database.ten_scores()), 0, 20)
 
 
-class LoadGameInit(tk.Frame):
+class LoadGame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
                           bg=parent.colour[1])
         self.pack_propagate(0)
         self.parent = parent
         self.parent.title(f'Load Game - {self.parent.p1.username}')
+
         self.back_button = BackButton(self, self.parent, GameMenu)
+        self.title = TitleLabel(self, self.parent, 'Online Game', 0, 20)
+        with open(LOAD_GAME_INFO_FILE, 'r') as f:
+            self.info_label = TextLabel(self, self.parent, f.read(), 0, 20)
+        self.server_ip_label = TextLabel(self, self.parent, 'Code:', 0, 20)
+        self.server_ip_entry = TextEntry(self, self.parent, '', 0, 20)
+        self.confirm_button = TextButton(self, self.parent, 'confirm',
+                                         lambda: self.load_game(self.server_ip_entry.get()), 0, 20)
+        self.alert = AlertLabel(self, self.parent, '', 0, 10)
+        self.watermark_label = WatermarkLabel(self, self.parent)
+
+
+    def load_game(self, code):
+        print(code)
 
 
 class OnlineGameInit(tk.Frame):
@@ -411,7 +425,7 @@ class OnlineGameInit(tk.Frame):
 
         self.back_button = BackButton(self, self.parent, GameMenu)
         self.title = TitleLabel(self, self.parent, 'Online Game', 0, 20)
-        with open(GAME_INFO_FILE, 'r') as f:
+        with open(ONLIEN_GAME_INFO_FILE, 'r') as f:
             self.info_label = TextLabel(self, self.parent, f.read(), 0, 20  )
         self.server_ip_label = TextLabel(self, self.parent, 'Server IP:\nE.g. 192.168.1.1', 0, 20)
         self.server_ip_entry = TextEntry(self, self.parent, '', 0, 20)
