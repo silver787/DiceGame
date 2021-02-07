@@ -9,7 +9,7 @@ import string
 import tkinter as tk
 
 
-class Database:
+class UserDB:
     def __init__(self, security):
         self.security = security
 
@@ -102,6 +102,8 @@ class Database:
         conn.commit()
         conn.close()
 
+
+class HighscoresDB:
     def add_highscore(self, username, highscore):
         conn = sqlite3.connect(HIGH_SCORES_DB)
         c = conn.cursor()
@@ -111,11 +113,11 @@ class Database:
         conn.commit()
         conn.close()
 
-    def ten_scores(self):
+    def twenty_scores(self):
         conn = sqlite3.connect(HIGH_SCORES_DB)
         c = conn.cursor()
 
-        c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 10")
+        c.execute("SELECT * FROM scores ORDER BY score DESC LIMIT 2 0")
         highscores = c.fetchall()
         highscores = [f'{i[0]}: {i[1]}' for i in highscores]
 
@@ -131,58 +133,6 @@ class Database:
         print('____HIGHSCORES TABLE____')
         for i in c.fetchall():
             print(i)
-
-        conn.commit()
-        conn.close()
-
-    def add_game(self, game_code, p1, p1_score, p2, p2_score, round, turn):
-        conn = sqlite3.connect(SAVED_GAMES_DB)
-        c = conn.cursor()
-
-        c.execute("INSERT INTO games VALUES (?, ?, ?, ?, ?, ?, ?)",
-                  (game_code, p1, p1_score, p2, p2_score, round, turn))
-
-        conn.commit()
-        conn.close()
-
-    def code_exists(self, code):
-        conn = sqlite3.connect(SAVED_GAMES_DB)
-        c = conn.cursor()
-
-        c.execute("SELECT * FROM games WHERE code = ?", (code,))
-        exists = False if c.fetchall() == [] else True
-
-        conn.commit()
-        conn.close()
-
-        return exists
-
-    def reveal_games_table(self):
-        conn = sqlite3.connect(SAVED_GAMES_DB)
-        c = conn.cursor()
-
-        c.execute("SELECT rowid, * FROM games")
-        print('____GAMES TABLE____')
-        for i in c.fetchall():
-            print(i)
-
-        conn.commit()
-        conn.close()
-
-    def gen_code(self):
-        while True:
-            chars = string.ascii_uppercase + string.digits
-            code = ''.join(random.choice(chars) for _ in range(3))
-            if self.code_exists(code):
-                continue
-
-            return code
-
-    def clear_games_table(self):
-        conn = sqlite3.connect(SAVED_GAMES_DB)
-        c = conn.cursor()
-
-        c.execute("DELETE FROM games")
 
         conn.commit()
         conn.close()
