@@ -1,5 +1,0 @@
-Hi, welcome to online Game!
-Online Game is just like duo Game, except you play against people over a network,
-instead of on a single machine.
-
-Have fun!
