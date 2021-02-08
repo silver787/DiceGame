@@ -6,10 +6,10 @@ import tkinter as tk
 from random import randint
 from tkinter import messagebox
 import pygame
-from Data.constants import *
-import Data.database as database
-import Data.security as security
-from Data.game_classes import *
+from data.constants import *
+import data.database as database
+import data.security as security
+from data.game_classes import *
 
 database.reveal_users_table()
 
@@ -138,14 +138,14 @@ class GameMenu(tk.Frame):
                           bg=self.parent.colour[1])
         self.pack_propagate(0)
 
-        parent.title(f"Game Menu - {player_one.username}")
+        parent.title(f"game Menu - {player_one.username}")
 
-        self.game_menu_label = tk.Label(self, text="Game Menu", font=(FONT, TITLE_FONT_SIZE),
+        self.game_menu_label = tk.Label(self, text="game Menu", font=(FONT, TITLE_FONT_SIZE),
                                         fg=self.parent.font_colour, bg=self.parent.colour[1]).pack(pady=60)
-        self.play_duo_button = tk.Button(self, text="Duo Game", bg=self.parent.colour[1],
+        self.play_duo_button = tk.Button(self, text="Duo game", bg=self.parent.colour[1],
                                          highlightbackground=self.parent.colour[1], width=25, height=2,
                                          command=lambda: self.parent.switch_frame(PlayerTwoLoginPage)).pack(pady=20)
-        self.play_online_button = tk.Button(self, text="Online Game", bg=self.parent.colour[1],
+        self.play_online_button = tk.Button(self, text="Online game", bg=self.parent.colour[1],
                                             highlightbackgroun=self.parent.colour[1], width=25,
                                             height=2,
                                             command=lambda: self.parent.switch_frame(OnlineGameInitPage)).pack(
@@ -177,9 +177,9 @@ class Settings(tk.Frame):
                               padx=5, pady=5)
         self.game_menu_label = tk.Label(self, text="Settings", font=(FONT, TITLE_FONT_SIZE),
                                         fg=self.parent.font_colour, bg=self.parent.colour[1]).pack(pady=30)
-        self.music_title_label = tk.Label(self, text="Music", font=(FONT, 25, "underline"), fg=self.parent.font_colour,
+        self.music_title_label = tk.Label(self, text="music", font=(FONT, 25, "underline"), fg=self.parent.font_colour,
                                           bg=self.parent.colour[1]).pack(pady=10)
-        self.music_volume_label = tk.Label(self, text="Music Volume: ", fg=self.parent.font_colour,
+        self.music_volume_label = tk.Label(self, text="music Volume: ", fg=self.parent.font_colour,
                                            bg=self.parent.colour[1]).pack(pady=10)
         self.music_volume_scale = tk.Scale(self, orient="horizontal", bg=self.parent.colour[1], fg=parent.font_colour,
                                            length=80, troughcolor=self.parent.colour[1], showvalue=0,
@@ -306,7 +306,7 @@ class Rules(tk.Frame):
                                           fg=self.parent.font_colour, bg=self.parent.colour[1]).pack(pady=40)
 
         self.rules_label = tk.Label(self,
-                                    text='- In the dice Game there are two dice, one belonging to each player.\n\n- Each player takes turns to roll their dice, once you receive a roll,\n\ndifferent points will be added and subtracted depending on its nature.\n\n- If a player rolls an even number, 10 points are added to their score.\n\n- If a player rolls an odd number, then 5 points are subtracted from their score,\n\nunless it would cause their score to become negative.\n\n- If a player rolls a double, they receive an additional roll.\n\n- There are five rounds, where each rounds of each player rolling their dice once.\n\n- If both players scores are the same at the end of the five rounds,\n\nthen additional rounds will commence until the scores are no longer the same. ',
+                                    text='- In the dice game there are two dice, one belonging to each player.\n\n- Each player takes turns to roll their dice, once you receive a roll,\n\ndifferent points will be added and subtracted depending on its nature.\n\n- If a player rolls an even number, 10 points are added to their score.\n\n- If a player rolls an odd number, then 5 points are subtracted from their score,\n\nunless it would cause their score to become negative.\n\n- If a player rolls a double, they receive an additional roll.\n\n- There are five rounds, where each rounds of each player rolling their dice once.\n\n- If both players scores are the same at the end of the five rounds,\n\nthen additional rounds will commence until the scores are no longer the same. ',
                                     bg=self.parent.colour[1], fg=self.parent.font_colour).pack(pady=10)
 
         self.watermark_label = tk.Label(self, text="© Toby Hogan 2020", bg=self.parent.colour[1],
@@ -332,7 +332,7 @@ class PlayerTwoLoginPage(tk.Frame):
                                                                                               padx=5, pady=5)
         self.player_two_login_label = tk.Label(self, text="Player Two Login", font=(FONT, TITLE_FONT_SIZE),
                                                fg=parent.font_colour, bg=parent.colour[1]).pack(pady=5)
-        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the Game.",
+        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the game.",
                                    bg=parent.colour[1], fg=parent.font_colour).pack(pady=5)
         self.username_label = tk.Label(self, text="Username: ", bg=parent.colour[1], fg=parent.font_colour).pack(
             pady=10)
@@ -388,7 +388,7 @@ class PlayerTwoCreateAccountPage(tk.Frame):
                                                                                                         padx=5, pady=5)
         self.create_account_label = tk.Label(self, text="Create Account", font=(FONT, TITLE_FONT_SIZE),
                                              bg=self.parent.colour[1], fg=self.parent.font_colour).pack()
-        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the Game.",
+        self.info_label = tk.Label(self, text="Information: you will be logged out\n at the end of the game.",
                                    bg=parent.colour[1], fg=parent.font_colour).pack(pady=15)
         self.username_label = tk.Label(self, text="New Username: ", bg=self.parent.colour[1],
                                        fg=self.parent.font_colour).pack(pady=10)
@@ -433,7 +433,7 @@ class PlayerTwoCreateAccountPage(tk.Frame):
 
 
 class DuoGame(tk.Frame):
-    "A class that creates an instance of the duo Game"
+    "A class that creates an instance of the duo game"
 
     def __init__(self, parent):
         self.parent = parent
@@ -441,7 +441,7 @@ class DuoGame(tk.Frame):
                           bg=self.parent.colour[0])
         self.pack_propagate(0)
 
-        parent.title(f"Duo Game - {player_one.username} vs {player_two.username}")
+        parent.title(f"Duo game - {player_one.username} vs {player_two.username}")
 
         self.game = Game()
 
@@ -449,7 +449,7 @@ class DuoGame(tk.Frame):
                                      highlightbackground=self.parent.colour[0], command=lambda: self.quit_game()).pack(
             anchor="nw", padx=5, pady=5)
 
-        self.title = tk.Label(self, text="Duo Game", bg=self.parent.colour[0], fg=self.parent.font_colour,
+        self.title = tk.Label(self, text="Duo game", bg=self.parent.colour[0], fg=self.parent.font_colour,
                               font=(FONT, 30))
         self.title.grid(column=0, row=0, columnspan=3, pady=4)
 
@@ -626,7 +626,7 @@ class DuoGame(tk.Frame):
     def quit_game(self):
 
         self.quit_messagebox = messagebox.askokcancel(title='Confirm',
-                                                      message='Are you sure you want to quit?\nGame progress will not be saved!')
+                                                      message='Are you sure you want to quit?\ngame progress will not be saved!')
         if self.quit_messagebox:
             self.parent.switch_frame(GameMenu)
 
@@ -639,7 +639,7 @@ class GameOverFrame(tk.Frame):
                           bg=self.parent.colour[1])
         self.pack_propagate(0)
 
-        parent.title(f"Game Over")
+        parent.title(f"game Over")
 
         parent.unbind("<Key-Shift_L>")
         parent.unbind("<Key-Return>")
@@ -669,7 +669,7 @@ class GameOverFrame(tk.Frame):
 
 
 class OnlineGameInitPage(tk.Frame):
-    "A class that creates a page that asks for the details required for the online Game"
+    "A class that creates a page that asks for the details required for the online game"
 
     def __init__(self, parent):
         self.parent = parent
@@ -678,15 +678,15 @@ class OnlineGameInitPage(tk.Frame):
 
         self.pack_propagate(0)
 
-        self.parent.title(f"Online Game - {player_one.username}")
+        self.parent.title(f"Online game - {player_one.username}")
 
         self.back_button = tk.Button(self, text="back", bg=self.parent.colour[1],
                                      highlightbackground=self.parent.colour[1],
                                      command=lambda: parent.switch_frame(GameMenu)).pack(anchor="nw", padx=5, pady=5)
-        self.online_game_title_label = tk.Label(self, text="Online Game", font=(FONT, 30),
+        self.online_game_title_label = tk.Label(self, text="Online game", font=(FONT, 30),
                                                 fg=self.parent.font_colour, bg=self.parent.colour[1]).pack(pady=20)
         self.online_game_info_label = tk.Label(self,
-                                               text="Hi, welcome to online Game!\nOnline Game is just like duo Game,  except\nyou play against people over a network\ninstead of on a single machine.\nHave fun!",
+                                               text="Hi, welcome to online game!\nOnline game is just like duo game,  except\nyou play against people over a network\ninstead of on a single machine.\nHave fun!",
                                                fg=self.parent.font_colour, bg=self.parent.colour[1]).pack(pady=20)
         self.server_ip_label = tk.Label(self, text="Server IP:\n\ne.g. 192.168.1.1", fg=self.parent.font_colour,
                                         bg=self.parent.colour[1]).pack(pady=20)
@@ -702,7 +702,7 @@ class OnlineGameInitPage(tk.Frame):
 
 
 class OnlineGamePage(tk.Frame):
-    "A page that creates an instance of the online Game"
+    "A page that creates an instance of the online game"
 
     def __init__(self, parent, server_ip):
         self.parent = parent
@@ -711,14 +711,14 @@ class OnlineGamePage(tk.Frame):
                           bg=self.parent.colour[0])
         self.pack_propagate(0)
 
-        parent.title(f"Game Over")
+        parent.title(f"game Over")
 
         self.back_button = tk.Button(self, text="back", bg=self.parent.colour[0],
                                      highlightbackground=self.parent.colour[0],
                                      command=lambda: self.parent.switch_frame(GameMenu)).pack(
             anchor="nw", padx=5, pady=5)
 
-        self.title = tk.Label(self, text="Online Game", bg=self.parent.colour[0], fg=self.parent.font_colour,
+        self.title = tk.Label(self, text="Online game", bg=self.parent.colour[0], fg=self.parent.font_colour,
                               font=(FONT, 30))
         self.title.grid(column=0, row=0, columnspan=3, pady=4)
 

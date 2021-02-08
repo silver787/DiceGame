@@ -1,7 +1,7 @@
 import pygame
 import tkinter as tk
 from PIL import ImageTk, Image
-from Data.constants import *
+from data.constants import *
 from frames import *
 import itertools
 

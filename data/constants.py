@@ -8,19 +8,19 @@ TITLE_FONT_SIZE = 30
 
 WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 600
-LOGINS_FILE = "Data/logins.txt"
-HIGH_SCORES_FILE = "Data/high_scores.txt"
+LOGINS_FILE = "data/logins.txt"
+HIGH_SCORES_FILE = "data/high_scores.txt"
 
-BLUE_DICE = ["Images/blue_die_12.jpg", "Images/blue_die_22.jpg",
-             "Images/blue_die_32.jpg", "Images/blue_die_42.jpg", "Images/blue_die_52.jpg", "Images/blue_die_62.jpg"]
-GREEN_DICE = ["Images/green_die_12.jpg", "Images/green_die_22.jpg",
-              "Images/green_die_32.jpg", "Images/green_die_42.jpg", "Images/green_die_52.jpg", "Images/green_die_62.jpg"]
-BLACK_DICE = ["Images/black_die_12.jpg", "Images/black_die_22.jpg",
-              "Images/black_die_32.jpg", "Images/black_die_42.jpg", "Images/black_die_52.jpg", "Images/black_die_62.jpg"]
-WHITE_DICE = ["Images/white_die_12.jpg", "Images/white_die_22.jpg",
-              "Images/white_die_32.jpg", "Images/white_die_42.jpg", "Images/white_die_52.jpg", "Images/white_die_62.jpg"]
+BLUE_DICE = ["images/blue_die_12.jpg", "images/blue_die_22.jpg",
+             "images/blue_die_32.jpg", "images/blue_die_42.jpg", "images/blue_die_52.jpg", "images/blue_die_62.jpg"]
+GREEN_DICE = ["images/green_die_12.jpg", "images/green_die_22.jpg",
+              "images/green_die_32.jpg", "images/green_die_42.jpg", "images/green_die_52.jpg", "images/green_die_62.jpg"]
+BLACK_DICE = ["images/black_die_12.jpg", "images/black_die_22.jpg",
+              "images/black_die_32.jpg", "images/black_die_42.jpg", "images/black_die_52.jpg", "images/black_die_62.jpg"]
+WHITE_DICE = ["images/white_die_12.jpg", "images/white_die_22.jpg",
+              "images/white_die_32.jpg", "images/white_die_42.jpg", "images/white_die_52.jpg", "images/white_die_62.jpg"]
 
 ALL_DICE = [BLUE_DICE, GREEN_DICE, BLACK_DICE, WHITE_DICE]
 
-MUSIC_FILE = "Music/bensound-thejazzpiano_2.mp3"
+MUSIC_FILE = "music/bensound-thejazzpiano_2.mp3"
 
