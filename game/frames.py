@@ -135,7 +135,7 @@ class GameMenu(tk.Frame):
 
         parent.title(f"game Menu - {player_one.username}")
 
-        self.game_menu_label = tk.Label(self, text="game Menu", font=(FONT, TITLE_FONT_SIZE),
+        self.game_menu_label = tk.Label(self, text="Game Menu", font=(FONT, TITLE_FONT_SIZE),
                                         fg=self.parent.font_colour, bg=self.parent.colour[1]).pack(pady=60)
         self.play_duo_button = tk.Button(self, text="Duo game", bg=self.parent.colour[1],
                                          highlightbackground=self.parent.colour[1], width=25, height=2,
@@ -506,7 +506,7 @@ class DuoGame(tk.Frame):
 
         self.player_one_roll_button = tk.Button(self.player_one_frame, text="ROLL!", bg=self.parent.colour[1],
                                                 highlightbackground=self.parent.colour[1],
-                                                command=lambda: self.roll(player_one))
+                                                command=lambda: self.roll(player_one, 1))
         self.player_one_roll_button.pack()
 
         self.player_one_info = tk.Label(self.player_one_frame, text="OR Press Left Shift!", bg=self.parent.colour[1],
@@ -515,7 +515,7 @@ class DuoGame(tk.Frame):
 
         self.player_two_roll_button = tk.Button(self.player_two_frame, text="ROLL!", bg=self.parent.colour[1],
                                                 highlightbackground=self.parent.colour[1],
-                                                command=lambda: self.roll(player_two))
+                                                command=lambda: self.roll(player_two, 2))
         self.player_two_roll_button.pack()
 
         self.player_two_tip = tk.Label(self.player_two_frame, text="OR Press Return!", bg=self.parent.colour[1],
@@ -524,13 +524,13 @@ class DuoGame(tk.Frame):
 
         self.player_two_roll_button["state"] = "disabled"
 
-        self.parent.bind("<Key-Shift_L>", lambda event: self.roll(player_one))
-        self.parent.bind("<Key-Return>", lambda event: self.roll(player_two))
+        self.parent.bind("<Key-Shift_L>", lambda event: self.roll(player_one, 1))
+        self.parent.bind("<Key-Return>", lambda event: self.roll(player_two, 2))
 
-    def roll(self, player):
+    def roll(self, player, player_num):
 
         if self.game.round <= 5 or player_one.score == player_two.score:
-            if player == player_one and self.game.turn == player_one:
+            if player_num == 1 and self.game.turn == 1:
                 player.roll_1 = randint(1, 6)
                 player.roll_2 = randint(1, 6)
                 player.round_score = player.roll_1 + player.roll_2
@@ -563,13 +563,13 @@ class DuoGame(tk.Frame):
                 if not player.roll_again:
                     self.player_two_roll_button["state"] = "normal"
                     self.player_one_roll_button["state"] = "disabled"
-                    self.game.turn = player_two
+                    self.game.turn = 2
 
                 self.player_score_title.configure(
                     text="Round: " + str(self.game.round) + "\n\nScore\n" + str(player_one.score) + ":" + str(
                         player_two.score))
 
-            elif player == player_two and self.game.turn == player_two:
+            elif player_num == 2 and self.game.turn == 2:
                 player.roll_1 = randint(1, 6)
                 player.roll_2 = randint(1, 6)
                 player.round_score = player.roll_1 + player.roll_2
@@ -608,7 +608,7 @@ class DuoGame(tk.Frame):
                     self.player_two_roll_button["state"] = "disabled"
                     self.player_one_roll_button["state"] = "active"
                     self.game.round += 1
-                    self.game.turn = player_one
+                    self.game.turn = 1
 
                 self.player_score_title.configure(
                     text="Round: " + str(self.game.round) + "\n\nScore\n" + str(player_one.score) + ":" + str(
@@ -945,8 +945,6 @@ class GameOverFrameOnline(tk.Frame):
 
         parent.unbind("<Key-Shift_L>")
 
-        database.add_highscore(player_one.username, player_one.score)
-        database.add_highscore(player_two.username, player_two.score)
 
         result = '\n'.join(database.show_ten_highscores())
 

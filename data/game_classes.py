@@ -8,7 +8,7 @@ class Player:
 class Game:
     def __init__(self):
         self.round = 0
-        self.turn = player_one
+        self.turn = 1
 
 
 class OnlineGame:
