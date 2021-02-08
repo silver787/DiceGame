@@ -1,8 +1,6 @@
 import sqlite3
 import data.security as security
 
-conn = sqlite3.connect("data/user_info.db")
-
 
 def add_user(username, password, theme, volume):
     password = security.hash(password)
@@ -21,7 +19,10 @@ def check_user(username, password):
     c = conn.cursor()
 
     c.execute("SELECT * FROM users WHERE username = ?", (username,))
-    valid = True if security.check_hash(password, c.fetchone()[1]) else False
+    try:
+        valid = True if security.check_hash(password, c.fetchone()[1]) else False
+    except:
+        valid = False
 
     conn.commit()
     conn.close()
@@ -122,6 +123,14 @@ def reveal_scores_table():
     conn.close()
 
 
+# conn = sqlite3.connect("data/user_info.db")
+# c = conn.cursor()
+# c.execute("""CREATE TABLE users (
+#         username text,
+#         password text,
+#         theme text,
+#         volume integer
+#     )""")
 
-
-
+# c.execute("INSERT INTO users VALUES ('toby', 'password', 'blue', 0.2)")
+# conn.close()

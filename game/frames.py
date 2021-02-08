@@ -11,11 +11,6 @@ import data.database as database
 import data.security as security
 from data.game_classes import *
 
-database.reveal_users_table()
-
-
-
-
 
 class PlayerOneLoginPage(tk.Frame):
 
