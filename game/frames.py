@@ -696,6 +696,7 @@ class OnlineGameInitPage(tk.Frame):
                                         font=(None, 10)).pack(side="bottom")
 
 
+
 class OnlineGamePage(tk.Frame):
     "A page that creates an instance of the online game"
 
