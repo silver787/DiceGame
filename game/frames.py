@@ -699,6 +699,7 @@ class OnlineGameInitPage(tk.Frame):
 
 
 
+
 class OnlineGamePage(tk.Frame):
     "A page that creates an instance of the online game"
 
