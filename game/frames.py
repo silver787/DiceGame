@@ -172,7 +172,7 @@ class Settings(tk.Frame):
                               padx=5, pady=5)
         self.game_menu_label = tk.Label(self, text="Settings", font=(FONT, TITLE_FONT_SIZE),
                                         fg=self.parent.font_colour, bg=self.parent.colour[1]).pack(pady=30)
-        self.music_title_label = tk.Label(self, text="music", font=(FONT, 25, "underline"), fg=self.parent.font_colour,
+        self.music_title_label = tk.Label(self, text="Music", font=(FONT, 25, "underline"), fg=self.parent.font_colour,
                                           bg=self.parent.colour[1]).pack(pady=10)
         self.music_volume_label = tk.Label(self, text="music Volume: ", fg=self.parent.font_colour,
                                            bg=self.parent.colour[1]).pack(pady=10)
