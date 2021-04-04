@@ -17,6 +17,8 @@ class PlayerOneLoginPage(tk.Frame):
     def __init__(self, parent):
         self.parent = parent
 
+        self.parent.title("Login")
+
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
                           bg=self.parent.colour[1])
         self.pack_propagate(0)
