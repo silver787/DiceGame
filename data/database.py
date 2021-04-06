@@ -98,6 +98,7 @@ def add_highscore(username, highscore):
 
 
 def show_ten_highscores():
+    "returns 10 highscores ordered from highest to lowest as a list"
     conn = sqlite3.connect('data/high_scores.db')
     c = conn.cursor()
 
