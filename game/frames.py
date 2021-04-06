@@ -793,6 +793,7 @@ class OnlineGamePage(tk.Frame):
         _thread.start_new_thread(self.network, (str(self.server_ip), 65432))
 
     def network(self, host, port):
+        "This function allows the client to communicate with the server to exchange information about the game to allow it to function"
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.s:
             try:
                 self.s.connect((host, port))
