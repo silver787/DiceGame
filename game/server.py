@@ -1,21 +1,31 @@
 import socket
+# socket is used for networking and sending information over the internet
 import pickle
+# pickle is used for converting objects into bytes that can be sent over the internet
 import _thread
+# _thread is used for creating seperate threads for clients that connect to the server(this file)
 from data.game_classes import OnlineGame
+# OnlineGame has all the classes that the server and clients use to communicate with eachother
 import time
+# time is used to slow down the execution of loops within the program, to reduce CPU strain
 
 host = socket.gethostname()
+# gets the name of the host used for creating their socket
 port = 65432
+# specifies the port number used for communication
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
 s.listen(5)
+# the creation of the socket itself
 
 games = {}
 id_count = 0
+# variables that keep track of the games currently in play
 
 
 def handle_client(clientsocket, clientaddress, game_id, player):
+    """A fucntion that's threaded each time a new client connects, to allow the server to communicate with them"""
     global id_count
     clientsocket.send(str.encode(str(p)))
     if player == 0:
@@ -53,6 +63,7 @@ def handle_client(clientsocket, clientaddress, game_id, player):
 
 
 while True:
+    # the infinite loop that keeps listening for clients and allows them to connect
     time.sleep(0.1)
     conn, addr = s.accept()
 
@@ -69,3 +80,4 @@ while True:
     _thread.start_new_thread(handle_client, (conn, addr, game_id, p))
 
 s.close()
+# closes the socket once the main part of the program is over

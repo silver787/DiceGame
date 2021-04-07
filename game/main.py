@@ -1,12 +1,20 @@
 import pygame
+# pygame is used for music
 import tkinter as tk
+# tkinter is used for the GUI
 from PIL import ImageTk, Image
+# PIL is used for image processing
 from data.constants import *
+# constants gets constants needed
 from frames import *
-import itertools
+# frames gets the different pages made
 
 
 class Root(tk.Tk):
+    """A class that creates the base for all widgets, all the other frames(pages) are added ontop of this one, the
+    class also carries out certain processses that are needed for all the other pages to work, such as pygame music
+    initialization"""
+
     def __init__(self):
         tk.Tk.__init__(self)
 
@@ -40,6 +48,7 @@ class Root(tk.Tk):
         self.switch_frame(PlayerOneLoginPage)
 
     def switch_frame(self, frame, *args):
+        """A function that allows the page currently being displayed on the base page(Root) to be changed."""
         if self.frame:
             self.frame.destroy()
 
