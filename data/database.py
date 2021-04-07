@@ -156,3 +156,4 @@ def reveal_scores_table():
 # conn.close()
 
 # function to add a user that can be executed from the terminal if needed
+
