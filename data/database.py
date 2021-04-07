@@ -1,5 +1,7 @@
 import sqlite3
+# sqlite3 is the datbase module I am using to allow me to work with databases
 import data.security as security
+# data.security contains functions relating the securing of data, this is used to encrypt passwords before they are added to databases
 
 
 def add_user(username, password, theme, volume):

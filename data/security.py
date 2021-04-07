@@ -1,5 +1,7 @@
 import bcrypt
+# bcyrypt is the encryption module I am using
 import re
+# re is a regex module for python, and I am using it to create search patterns to make stronger passwords
 
 
 # imports the regex and bcrypt modules - regex used to make advanced patterns for searching, bcrypt for encryption
