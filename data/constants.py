@@ -3,6 +3,7 @@ GREEN = ["#9ec98f", "#5f914d"]
 BLACK = ["#4d4d4d", "#363636"]
 WHITE = ["#f7f7f7", "#dbdbdb"]
 
+
 FONT = "PT Serif"
 TITLE_FONT_SIZE = 30
 
