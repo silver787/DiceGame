@@ -13,6 +13,10 @@ from data.game_classes import *
 
 
 class PlayerOneLoginPage(tk.Frame):
+    """A class that makes the login page for the first player,
+     it asks the player to enter their username password,
+     and also give the player the option to create an account
+      if they do not have one"""
 
     def __init__(self, parent):
         self.parent = parent
@@ -47,6 +51,9 @@ class PlayerOneLoginPage(tk.Frame):
                                         font=(None, 10)).pack(side="bottom")
 
     def check_login(self, username, password):
+        """Funciton within the login page that executes when a player attempts to login,
+        it checks that the credentials a player entered are correct,
+        if they are, it logs the player in and goes to the main menu"""
 
         global player_one
 
@@ -71,7 +78,9 @@ class PlayerOneLoginPage(tk.Frame):
 
 
 class PlayerOneCreateAccountPage(tk.Frame):
-
+    """A class that makes the login page that allows the player to create an account if they do not have one,
+    the page also gives the player to go back to the login page if they want.
+    The page has a username text box, a password text box and a confirm password text box"""
     def __init__(self, parent):
         self.parent = parent
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -111,6 +120,9 @@ class PlayerOneCreateAccountPage(tk.Frame):
                                         font=(None, 10)).pack(side="bottom")
 
     def confirm_new_account(self, username, password, confirm_password):
+        """A function that validates the credentials to make a new user account,
+        if the credentials are validated successfully then a new account will be made, and the user will
+        be sent to the main menu"""
         global player_one
 
         valid = True if 2 < len(username) < 15 and 2 < len(password) < 15 else False
@@ -129,6 +141,8 @@ class PlayerOneCreateAccountPage(tk.Frame):
 
 
 class GameMenu(tk.Frame):
+    """A class that creates the main menu page, the page provides several options to users: to see the rules,
+    to play duo game, to play online game or to go to settings where they can logout if needed"""
     def __init__(self, parent):
         self.parent = parent
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -158,7 +172,9 @@ class GameMenu(tk.Frame):
 
 
 class Settings(tk.Frame):
-
+    """A class that creates the settigns page, the settigns page provides serveral options to users: they can
+    change volume of music playing when they access their account, they can change the theme(colour scheme) of
+    the GUI when they login, they can also logout by pressing the button in the bottom right"""
     def __init__(self, parent):
         self.parent = parent
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -228,6 +244,8 @@ class Settings(tk.Frame):
             self.white_theme_checkbox.select()
 
     def change_theme(self, theme, button):
+        """A function that's executed when a player changes the theme of their account, makes sure the checkbox
+        for the colour they had chosen before is deselected"""
         self.blue_theme_checkbox.deselect()
         self.green_theme_checkbox.deselect()
         self.black_theme_checkbox.deselect()
@@ -260,12 +278,15 @@ class Settings(tk.Frame):
         self.log_out_button.configure(fg="black")
 
     def change_volume(self, volume):
+        """A function that is executed when the volume slider is moved, the function updates the users volume on the
+        database"""
         database.update_user_volume(player_one.username, float(int(volume) / 100))
 
         pygame.mixer.music.set_volume(float(int(volume) / 100))
 
     def log_out(self):
-
+        """A function that is executed when the user clicks the "log out" button, when executed a popup appears
+        asking the user to confirm that they want to log out"""
         self.log_out_messagebox = messagebox.askokcancel(title='Confirm',
                                                          message='Are you sure you want to log out?')
         if self.log_out_messagebox:
@@ -286,7 +307,8 @@ class Settings(tk.Frame):
 
 
 class Rules(tk.Frame):
-
+    """A class that creates the rules page, the rules page shows all of the information needed to play the game
+    and the guidlines that need to be followed while playing it"""
     def __init__(self, parent):
         self.parent = parent
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -311,6 +333,9 @@ class Rules(tk.Frame):
 
 
 class PlayerTwoLoginPage(tk.Frame):
+    """A class that creates the login page for player two, the player two login page is the same as the player one
+    one execpt that it is shown when the user attempts to play duo game or onlien game from the main menu, instead of
+    when the program is started, and player two will be automatically logged out after the game is finished"""
 
     def __init__(self, parent):
         self.parent = parent
@@ -352,6 +377,8 @@ class PlayerTwoLoginPage(tk.Frame):
                                         font=(None, 10)).pack(side="bottom")
 
     def check_login(self, username, password):
+        """A function that executes when a user attempt to login for player two, chekcs that their credentials are
+        correct before allowing them to play, if the credentials are not correct, an error message is shown"""
         global player_two
 
         if database.check_user(username, password):
@@ -367,8 +394,7 @@ class PlayerTwoLoginPage(tk.Frame):
 
 
 class PlayerTwoCreateAccountPage(tk.Frame):
-    "A class that allows player two to optionally create a page, if they cannot don't wont to login"
-
+    "A class that creates the page that allows player two to create an account if they can't login"
     def __init__(self, parent):
         self.parent = parent
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -411,7 +437,9 @@ class PlayerTwoCreateAccountPage(tk.Frame):
                                         font=(None, 10)).pack(side="bottom")
 
     def confirm_new_account(self, username, password, confirm_password):
-
+        """A function that executes when a user attempts to create a new account and login as player two,
+        the function validates their credentials, and if they are valid creates a new account, and procedues to
+        duo game or online game depending on which option player one chose"""
         global player_two
 
         valid = True if 2 < len(username) < 15 and 2 < len(password) < 15 else False
@@ -430,7 +458,8 @@ class PlayerTwoCreateAccountPage(tk.Frame):
 
 
 class DuoGame(tk.Frame):
-    "A class that creates an instance of the duo game"
+    """A class that creates the duo game page once two players have been successfully logged in, the duo game page
+    allows the players to play as described in the rules section"""
 
     def __init__(self, parent):
         self.parent = parent
@@ -530,6 +559,8 @@ class DuoGame(tk.Frame):
         self.parent.bind("<Key-Return>", lambda event: self.roll(player_two, 2))
 
     def roll(self, player, player_num):
+        """A function that executes when a player presses the "roll" button, the function determines which
+        player's go it is, then proceeds to randomly generate numbers and show them to the player as their roll"""
 
         if self.game.round <= 5 or player_one.score == player_two.score:
             if player_num == 1 and self.game.turn == 1:
@@ -621,7 +652,9 @@ class DuoGame(tk.Frame):
             self.parent.switch_frame(GameOverFrame)
 
     def quit_game(self):
-
+        """A function that allows either player to stop the game mid-progress and exit back to the main menu,
+        before they are actually sent back to the main menu however, a popup will apear asking the a player to
+        confirm their decision"""
         self.quit_messagebox = messagebox.askokcancel(title='Confirm',
                                                       message='Are you sure you want to quit?\ngame progress will not be saved!')
         if self.quit_messagebox:
@@ -629,7 +662,8 @@ class DuoGame(tk.Frame):
 
 
 class GameOverFrame(tk.Frame):
-
+    """A class that creates the "game over" page, congratulating the player that won, and displaying the 10 highest
+    scores, a button also appears that gives a player the option to head back to the main menu"""
     def __init__(self, parent):
         self.parent = parent
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
@@ -666,7 +700,9 @@ class GameOverFrame(tk.Frame):
 
 
 class OnlineGameInitPage(tk.Frame):
-    "A class that creates a page that asks for the details required for the online game"
+    """A class that creates a page that asks the user for information before allowing them to play online, this
+    information includes the IP address of the server they want to use. The page also gives the user some additional
+    information about the online game and how it's different to duo game"""
 
     def __init__(self, parent):
         self.parent = parent
@@ -703,7 +739,9 @@ class OnlineGameInitPage(tk.Frame):
 
 
 class OnlineGamePage(tk.Frame):
-    "A page that creates an instance of the online game"
+    """A class that creates the online game page, the online game page is similar to the duo game page, except it,
+    only provides the options for player one, and not player two, since player two is supposed to be playing on a
+    different instance of the game"""
 
     def __init__(self, parent, server_ip):
         self.parent = parent
@@ -793,7 +831,10 @@ class OnlineGamePage(tk.Frame):
         _thread.start_new_thread(self.network, (str(self.server_ip), 65432))
 
     def network(self, host, port):
-        "This function allows the client to communicate with the server to exchange information about the game to allow it to function"
+        """A function that allows the clients game to communicate with the server and exchange information with it
+        there is one loop that continually executes throughout the playing of the game, data is sent about the
+        clients game to the server after being assigned in an object"""
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.s:
             try:
                 self.s.connect((host, port))
@@ -869,6 +910,8 @@ class OnlineGamePage(tk.Frame):
                     self.parent.switch_frame(OnlineGameInitPage)
 
     def roll(self, player):
+        """A function, that similarly to the roll funciton in duo game, allows the player to take their turn,
+        and update the numbers on their dice, for the chance to increase their total number of points"""
         if player == 0 and self.game_obj.player_turn == 0:
             self.game_obj.player_one_roll_one = randint(1, 6)
             self.game_obj.player_one_roll_two = randint(1, 6)
@@ -943,7 +986,8 @@ class OnlineGamePage(tk.Frame):
 
 
 class GameOverFrameOnline(tk.Frame):
-
+    """A class that creates a page that is shown after the end of the online game, with the top 10 highscores, the
+    page also allows the user to head back to the main menu if they wish to"""
     def __init__(self, parent, p1_score, p2, p2_score):
         self.parent = parent
         tk.Frame.__init__(self, self.parent, width=WINDOW_WIDTH / 5 * 4, height=WINDOW_HEIGHT,
