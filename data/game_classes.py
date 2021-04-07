@@ -5,10 +5,15 @@ class Player:
         self.score = 0
 
 
+# class that represents a player - used to store all useful information relating to a player for a game session
+
 class Game:
     def __init__(self):
         self.round = 0
         self.turn = 1
+
+
+# class that represents a game for "duo game" stores which player's turn it is, and what the round number is
 
 
 class OnlineGame:
@@ -25,3 +30,5 @@ class OnlineGame:
         self.player_one_roll_two = 0
         self.player_two_roll_one = 0
         self.player_two_roll_two = 0
+
+# class that stores all relevant information needed for the online game - used by the server to talk to the clients
