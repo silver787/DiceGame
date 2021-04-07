@@ -1,15 +1,27 @@
 import _thread
+# _thread allows threading to occur in the program, this is used for the online game
 import pickle
+# pickle allows the game objects to be converted into transferreable characters, this is also used for the onlne game
 import socket
+# socket is used, again, in the online game to send information over the internet
 import time
+# time is used for the online game again, so the while loop needed does not execute as fast as it can, and is limited
 import tkinter as tk
+# tkinter is used for creating the GUI
 from random import randint
+# random is used for producing the numbers used for the players rolls in both game modes
 from tkinter import messagebox
+# tkinter.messagebox is used to create popups which can ask the player to confirm their decisions e.g. logging out
 import pygame
+# pygame is used to add music to the game
 from data.constants import *
+# data.constants is a local import, and retrieves all the constants defined in the constants.py file
 import data.database as database
+# database imports all of the functions defined in database.py
 import data.security as security
+# security imports the functions defined in security.py and is used for increasing the security of information within the game, particularly usernames and passwords
 from data.game_classes import *
+# data.game_classes contains the game related classses that are needed for the game to function
 
 
 class PlayerOneLoginPage(tk.Frame):
