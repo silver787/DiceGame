@@ -574,7 +574,7 @@ class DuoGame(tk.Frame):
         """A function that executes when a player presses the "roll" button, the function determines which
         player's go it is, then proceeds to randomly generate numbers and show them to the player as their roll"""
 
-        if self.game.round <= 5 or player_one.score == player_two.score:
+        if self.game.round < 6 or player_one.score == player_two.score:
             if player_num == 1 and self.game.turn == 1:
                 player.roll_1 = randint(1, 6)
                 player.roll_2 = randint(1, 6)
